@@ -1,0 +1,17 @@
+{
+  "name": "inzynierka_rezzerwacje",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently -n BACKEND,FRONTEND -c green,blue \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
+    "dev:all": "concurrently -n BACKEND,FRONTEND,STUDIO -c green,blue,magenta \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\" \"npm --prefix backend run studio\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

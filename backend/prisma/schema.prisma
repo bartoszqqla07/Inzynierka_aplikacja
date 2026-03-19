@@ -1,0 +1,120 @@
+// Prisma schema for Engineering Thesis - Reservation System
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Service {
+  id       Int      @id @default(autoincrement())
+  name     String
+  duration Int      // minutes
+  price    Int      // PLN
+  salonId  Int
+
+  bookings Booking[]
+  salon    Salon    @relation(fields: [salonId], references: [id], onDelete: Cascade)
+}
+
+model Salon {
+  id          Int       @id @default(autoincrement())
+  name        String
+  city        String
+  description String?
+  address     String?
+  phone       String?
+  hours       Json?
+  imageUrl    String?
+  ownerId     Int?
+
+  services Service[]
+  bookings Booking[]
+  images   SalonImage[]
+  owner    User?    @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+
+  @@index([ownerId])
+}
+
+model SalonImage {
+  id      Int    @id @default(autoincrement())
+  url     String
+  salonId Int
+
+  salon Salon @relation(fields: [salonId], references: [id], onDelete: Cascade)
+  @@index([salonId])
+}
+
+enum UserRole {
+  ADMIN
+  OWNER
+  USER
+}
+
+enum NotificationType {
+  BOOKING_CONFIRMED
+  BOOKING_RESCHEDULED
+  BOOKING_CANCELLED
+  BOOKING_REMINDER_24H
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  authUserId String   @unique
+  email      String?  @unique
+  role       UserRole @default(USER)
+
+  bookings      Booking[]
+  notifications Notification[]
+  salonsOwned Salon[]
+}
+
+model Booking {
+  id          Int      @id @default(autoincrement())
+  salonId     Int
+  serviceId   Int
+  userId      Int?
+  clientName  String
+  clientPhone String?
+  dateTime    DateTime
+  createdAt   DateTime @default(now())
+
+  service       Service        @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  salon         Salon          @relation(fields: [salonId], references: [id], onDelete: Cascade)
+  user          User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  notifications Notification[]
+
+  @@unique([serviceId, dateTime]) // blokuje 2 rezerwacje tej samej uslugi w tym samym terminie
+  @@index([dateTime])
+  @@index([salonId])
+}
+
+model Notification {
+  id        Int              @id @default(autoincrement())
+  userId    Int
+  bookingId Int?
+  type      NotificationType
+  title     String
+  message   String
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  booking Booking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([userId, isRead])
+  @@index([bookingId])
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  name      String
+  city      String
+  rating    Int
+  text      String
+  createdAt DateTime @default(now())
+}
