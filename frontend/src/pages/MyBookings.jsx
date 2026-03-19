@@ -583,7 +583,7 @@ export default function MyBookings() {
   return (
     <div className="space-y-6">
       <div className="text-center">
-          <h1 className="text-3xl font-semibold text-slate-900">Moje rezerwacje</h1>
+          <h1 className="text-2xl font-semibold text-slate-900 sm:text-3xl">Moje rezerwacje</h1>
           <p className="mt-1 text-base text-slate-600">
             Lista przyszlych wizyt przypisanych do Twojego konta.
           </p>
@@ -615,7 +615,7 @@ export default function MyBookings() {
             return (
             <div
               key={booking.id}
-              className="rounded-2xl border border-slate-200/60 bg-white/70 p-5 shadow-sm"
+              className="rounded-2xl border border-slate-200/60 bg-white/70 p-4 shadow-sm sm:p-5"
             >
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="text-lg font-semibold text-slate-800">
@@ -755,7 +755,7 @@ export default function MyBookings() {
                           onClick={(e) => e.stopPropagation()}
                         >
                           <div className="grid gap-3">
-                            <div className="flex items-center justify-between">
+                            <div className="flex flex-wrap items-center justify-between gap-2">
                               <span className="text-xs text-slate-500">Data</span>
                               <div className="flex items-center gap-2">
                                 <button
@@ -797,7 +797,7 @@ export default function MyBookings() {
                               </div>
                             </div>
 
-                            <div className="grid grid-cols-7 gap-2 text-xs text-slate-400">
+                            <div className="grid grid-cols-7 gap-1 text-[11px] text-slate-400 sm:gap-2 sm:text-xs">
                               {["Pn", "Wt", "Sr", "Cz", "Pt", "Sb", "Nd"].map((label) => (
                                 <div key={label} className="text-center font-semibold">
                                   {label}
@@ -805,7 +805,7 @@ export default function MyBookings() {
                               ))}
                             </div>
 
-                            <div className="grid grid-cols-7 gap-2">
+                            <div className="grid grid-cols-7 gap-1 sm:gap-2">
                               {buildCalendarDays(editCalendarMonth).map((day, index) => {
                                 if (!day) {
                                   return <div key={`empty-${index}`} />;
@@ -831,7 +831,7 @@ export default function MyBookings() {
                                         time: "",
                                       }));
                                     }}
-                                    className={`rounded-lg border px-2 py-2 text-xs font-semibold transition ${
+                                    className={`rounded-lg border px-1.5 py-2 text-[11px] font-semibold transition sm:px-2 sm:text-xs ${
                                       isSelected
                                         ? "border-slate-900 bg-slate-900 text-white"
                                         : isPastDate || isClosed
@@ -854,7 +854,7 @@ export default function MyBookings() {
                               </span>
                             ) : (
                               <>
-                                <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
+                                <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6">
                                   {editVisibleTimes.map((time) => (
                                     <button
                                       key={time}
@@ -867,7 +867,7 @@ export default function MyBookings() {
                                       }}
                                       aria-pressed={editDraft.time === time}
                                       aria-disabled={editBlockedTimes.has(time)}
-                                      className={`rounded-lg border px-2 py-2 text-xs font-semibold transition ${
+                                      className={`rounded-lg border px-2 py-2 text-[11px] font-semibold transition sm:text-xs ${
                                         editDraft.time === time
                                           ? "border-slate-900 bg-slate-900 text-white"
                                           : editBlockedTimes.has(time)
@@ -920,29 +920,29 @@ export default function MyBookings() {
                     </label>
                   </div>
 
-                  <div className="mt-1 flex flex-wrap gap-2">
+                  <div className="mt-1 flex flex-col gap-2 sm:flex-row">
                     <button
                       type="button"
                       onClick={() => saveEdit(booking.id)}
-                      className="rounded-xl bg-teal-600 px-4 py-2 text-xs font-semibold text-white hover:bg-teal-500"
+                      className="w-full rounded-xl bg-teal-600 px-4 py-2 text-xs font-semibold text-white hover:bg-teal-500 sm:w-auto"
                     >
                       Zapisz zmiany
                     </button>
                     <button
                       type="button"
                       onClick={cancelEdit}
-                      className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700"
+                      className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 sm:w-auto"
                     >
                       Anuluj edycje
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="mt-4 flex flex-wrap gap-2">
+                <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
                   <button
                     type="button"
                     onClick={() => startEdit(booking)}
-                    className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 disabled:opacity-60"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 disabled:opacity-60 sm:w-auto"
                   >
                     Edytuj
                   </button>
@@ -957,7 +957,7 @@ export default function MyBookings() {
                         confirmText: "Odwolaj",
                       })
                     }
-                    className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-xs font-semibold text-rose-700 disabled:opacity-60"
+                    className="w-full rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-xs font-semibold text-rose-700 disabled:opacity-60 sm:w-auto"
                   >
                     Odwolaj wizyte
                   </button>

@@ -334,7 +334,7 @@ export default function Schedule() {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h1 className="text-3xl font-semibold text-slate-900">Terminarz</h1>
+        <h1 className="text-2xl font-semibold text-slate-900 sm:text-3xl">Terminarz</h1>
         <p className="mt-1 text-base text-slate-600">
           Lista przyszlych wizyt podzielona na salony.
         </p>
@@ -425,12 +425,12 @@ export default function Schedule() {
                                 Brak dostepnych godzin w dniu tej wizyty (wg godzin pracy salonu).
                               </div>
                             )}
-                            <div className="mt-1 flex flex-wrap gap-2">
+                            <div className="mt-1 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
                               <button
                                 type="button"
                                 onClick={() => saveEdit(booking.id)}
                                 disabled={isBusy || !editTime || blockedTimes.has(editTime)}
-                                className="rounded-xl bg-teal-600 px-4 py-2 text-xs font-semibold text-white hover:bg-teal-500 disabled:opacity-60"
+                                className="w-full rounded-xl bg-teal-600 px-4 py-2 text-xs font-semibold text-white hover:bg-teal-500 disabled:opacity-60 sm:w-auto"
                               >
                                 Zapisz termin
                               </button>
@@ -438,19 +438,19 @@ export default function Schedule() {
                                 type="button"
                                 onClick={cancelEdit}
                                 disabled={isBusy}
-                                className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 disabled:opacity-60"
+                                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 disabled:opacity-60 sm:w-auto"
                               >
                                 Anuluj
                               </button>
                             </div>
                           </div>
                         ) : (
-                          <div className="mt-3 flex flex-wrap gap-2">
+                          <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
                             <button
                               type="button"
                               onClick={() => startEdit(booking)}
                               disabled={isBusy}
-                              className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 disabled:opacity-60"
+                              className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 disabled:opacity-60 sm:w-auto"
                             >
                               Edytuj godzine
                             </button>
@@ -467,7 +467,7 @@ export default function Schedule() {
                                 })
                               }
                               disabled={isBusy}
-                              className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-xs font-semibold text-rose-700 disabled:opacity-60"
+                              className="w-full rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-xs font-semibold text-rose-700 disabled:opacity-60 sm:w-auto"
                             >
                               Odwolaj
                             </button>

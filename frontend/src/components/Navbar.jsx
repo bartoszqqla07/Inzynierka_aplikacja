@@ -261,7 +261,7 @@ export default function Navbar() {
   const isOwner = user?.role === "OWNER" || user?.role === "ADMIN";
 
   return (
-    <nav className="flex items-center gap-2">
+    <nav className="flex w-full flex-wrap items-center justify-end gap-2 lg:w-auto lg:flex-nowrap">
       <div className="relative" ref={mainMenuRef}>
         <button
           type="button"
@@ -274,7 +274,7 @@ export default function Navbar() {
         </button>
         {isMenuOpen ? (
           <div
-            className="absolute right-0 mt-2 w-56 rounded-2xl border border-slate-200 bg-white py-2 shadow-[0_20px_50px_rgba(15,23,42,0.18)]"
+            className="absolute right-0 mt-2 w-[min(14rem,calc(100vw-2rem))] rounded-2xl border border-slate-200 bg-white py-2 shadow-[0_20px_50px_rgba(15,23,42,0.18)]"
             role="menu"
           >
             <Link
@@ -341,7 +341,7 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => setIsOpen((value) => !value)}
-              className={`${baseClasses} max-w-[220px] truncate`}
+              className={`${baseClasses} max-w-[min(220px,60vw)] truncate`}
               aria-expanded={isOpen}
               aria-haspopup="menu"
             >
@@ -349,7 +349,7 @@ export default function Navbar() {
             </button>
             {isOpen ? (
               <div
-                className="absolute right-0 mt-2 w-64 rounded-2xl border border-slate-200 bg-white py-2 shadow-[0_20px_50px_rgba(15,23,42,0.18)]"
+                className="absolute right-0 mt-2 w-[min(16rem,calc(100vw-2rem))] rounded-2xl border border-slate-200 bg-white py-2 shadow-[0_20px_50px_rgba(15,23,42,0.18)]"
                 role="menu"
               >
                 <div className="px-4 py-2 text-xs uppercase tracking-wide text-slate-400">
@@ -410,7 +410,7 @@ export default function Navbar() {
             </button>
             {isNotificationsOpen ? (
               <div
-                className="absolute right-0 mt-2 w-80 rounded-2xl border border-slate-200 bg-white py-2 shadow-[0_20px_50px_rgba(15,23,42,0.18)]"
+                className="absolute right-0 mt-2 w-[min(20rem,calc(100vw-2rem))] rounded-2xl border border-slate-200 bg-white py-2 shadow-[0_20px_50px_rgba(15,23,42,0.18)]"
                 role="menu"
               >
                 <div className="flex items-center justify-between px-4 pb-2">

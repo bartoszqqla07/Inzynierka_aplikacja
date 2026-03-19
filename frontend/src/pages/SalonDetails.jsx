@@ -98,14 +98,14 @@ export default function SalonDetails() {
       : [];
 
   return (
-    <div className="mx-auto max-w-5xl space-y-8">
-      <div className="text-center text-sm text-slate-500">
+    <div className="mx-auto max-w-5xl space-y-6 sm:space-y-8">
+      <div className="break-words px-2 text-center text-xs text-slate-500 sm:text-sm">
         <Link to="/" className="hover:text-slate-700">Start</Link>
         <span className="mx-2">/</span>
         <span className="text-slate-700">{salon.name}</span>
       </div>
 
-      <section className="rounded-3xl border border-slate-200/70 bg-white/60 p-6 text-center shadow-sm backdrop-blur [box-shadow:inset_0_1px_0_rgba(255,255,255,0.7)] sm:p-8">
+      <section className="rounded-3xl border border-slate-200/70 bg-white/60 p-5 text-center shadow-sm backdrop-blur [box-shadow:inset_0_1px_0_rgba(255,255,255,0.7)] sm:p-8">
         <div className="mx-auto max-w-2xl">
           <div className="text-xs uppercase tracking-wide text-slate-400">O salonie</div>
           <h1 className="mt-2 text-3xl font-semibold text-slate-900 sm:text-4xl">{salon.name}</h1>
@@ -150,7 +150,7 @@ export default function SalonDetails() {
               type="button"
               aria-label="Poprzednie zdjecia"
               onClick={() => galleryRef.current?.scrollBy({ left: -360, behavior: "smooth" })}
-              className="absolute left-0 top-1/2 z-10 -translate-y-1/2 rounded-full border border-slate-200 bg-white/80 p-2 text-sm font-semibold text-slate-600 opacity-0 shadow-sm transition group-hover:opacity-100 hover:bg-white hover:text-slate-900"
+              className="absolute left-0 top-1/2 z-10 hidden -translate-y-1/2 rounded-full border border-slate-200 bg-white/80 p-2 text-sm font-semibold text-slate-600 opacity-0 shadow-sm transition group-hover:opacity-100 hover:bg-white hover:text-slate-900 md:block"
             >
               &lt;
             </button>
@@ -158,7 +158,7 @@ export default function SalonDetails() {
               type="button"
               aria-label="Nastepne zdjecia"
               onClick={() => galleryRef.current?.scrollBy({ left: 360, behavior: "smooth" })}
-              className="absolute right-0 top-1/2 z-10 -translate-y-1/2 rounded-full border border-slate-200 bg-white/80 p-2 text-sm font-semibold text-slate-600 opacity-0 shadow-sm transition group-hover:opacity-100 hover:bg-white hover:text-slate-900"
+              className="absolute right-0 top-1/2 z-10 hidden -translate-y-1/2 rounded-full border border-slate-200 bg-white/80 p-2 text-sm font-semibold text-slate-600 opacity-0 shadow-sm transition group-hover:opacity-100 hover:bg-white hover:text-slate-900 md:block"
             >
               &gt;
             </button>
@@ -168,7 +168,7 @@ export default function SalonDetails() {
             >
               {gallery.map((img, index) => (
                 <div key={`${img.url}-${index}`} className="snap-start">
-                  <div className="w-72 shrink-0 overflow-hidden rounded-2xl border border-slate-200/60 bg-white/70 shadow-sm">
+                  <div className="w-[min(18rem,82vw)] shrink-0 overflow-hidden rounded-2xl border border-slate-200/60 bg-white/70 shadow-sm sm:w-72">
                     <img
                       src={img.url}
                       alt={`${salon.name} ${index + 1}`}
@@ -194,7 +194,7 @@ export default function SalonDetails() {
             type="button"
             aria-label="Poprzednie uslugi"
             onClick={() => servicesRef.current?.scrollBy({ left: -360, behavior: "smooth" })}
-            className="absolute left-0 top-1/2 z-10 -translate-y-1/2 rounded-full border border-slate-200 bg-white/80 p-2 text-sm font-semibold text-slate-600 opacity-0 shadow-sm transition group-hover:opacity-100 hover:bg-white hover:text-slate-900"
+            className="absolute left-0 top-1/2 z-10 hidden -translate-y-1/2 rounded-full border border-slate-200 bg-white/80 p-2 text-sm font-semibold text-slate-600 opacity-0 shadow-sm transition group-hover:opacity-100 hover:bg-white hover:text-slate-900 md:block"
           >
             &lt;
           </button>
@@ -202,7 +202,7 @@ export default function SalonDetails() {
             type="button"
             aria-label="Nastepne uslugi"
             onClick={() => servicesRef.current?.scrollBy({ left: 360, behavior: "smooth" })}
-            className="absolute right-0 top-1/2 z-10 -translate-y-1/2 rounded-full border border-slate-200 bg-white/80 p-2 text-sm font-semibold text-slate-600 opacity-0 shadow-sm transition group-hover:opacity-100 hover:bg-white hover:text-slate-900"
+            className="absolute right-0 top-1/2 z-10 hidden -translate-y-1/2 rounded-full border border-slate-200 bg-white/80 p-2 text-sm font-semibold text-slate-600 opacity-0 shadow-sm transition group-hover:opacity-100 hover:bg-white hover:text-slate-900 md:block"
           >
             &gt;
           </button>
@@ -212,7 +212,7 @@ export default function SalonDetails() {
           >
             {salon.services.map((srv) => (
               <div key={srv.id} className="snap-start">
-                <div className="flex h-40 w-80 shrink-0 flex-col justify-between rounded-2xl border border-teal-200/70 bg-white/60 p-4 text-center shadow-sm backdrop-blur">
+                <div className="flex h-40 w-[min(20rem,82vw)] shrink-0 flex-col justify-between rounded-2xl border border-teal-200/70 bg-white/60 p-4 text-center shadow-sm backdrop-blur sm:w-80">
                   <div className="flex flex-col items-center">
                     <div className="text-center font-semibold text-slate-900">{srv.name}</div>
                     <div className="mt-2 rounded-full border border-teal-200/80 bg-teal-50 px-2 py-0.5 text-xs font-semibold text-teal-700">

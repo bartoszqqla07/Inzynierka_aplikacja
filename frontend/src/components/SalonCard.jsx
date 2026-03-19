@@ -5,7 +5,7 @@ const FALLBACK_IMAGE =
 
 export default function SalonCard({ salon }) {
   return (
-    <div className="h-full w-72 shrink-0 overflow-hidden rounded-2xl border border-slate-200/80 bg-white/90 text-center shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:shadow-md">
+    <div className="h-full w-[min(18rem,82vw)] shrink-0 overflow-hidden rounded-2xl border border-slate-200/80 bg-white/90 text-center shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:shadow-md sm:w-72">
       <Link
         to={`/salons/${salon.id}`}
         className="flex h-full flex-col items-center gap-4 p-5 outline-none focus-visible:ring-2 focus-visible:ring-teal-300"

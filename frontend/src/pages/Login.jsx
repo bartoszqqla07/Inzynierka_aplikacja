@@ -53,9 +53,9 @@ export default function Login() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(13,148,136,0.35),_transparent_50%),radial-gradient(circle_at_bottom,_rgba(249,115,22,0.28),_transparent_55%)]" />
         <div className="absolute inset-0 opacity-30 [background-image:linear-gradient(135deg,rgba(148,163,184,0.25)_1px,transparent_1px)] [background-size:32px_32px]" />
       </div>
-      <div className="fixed inset-0 z-30 flex items-center justify-center px-4">
+      <div className="fixed inset-0 z-30 flex items-center justify-center overflow-y-auto px-4 py-6">
         <div className="absolute inset-0 bg-slate-900/25 backdrop-blur-md" />
-        <div className="relative w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-[0_24px_80px_rgba(15,23,42,0.28)] sm:p-8">
+        <div className="relative my-auto w-full max-w-md rounded-3xl border border-slate-200 bg-white p-5 text-center shadow-[0_24px_80px_rgba(15,23,42,0.28)] sm:p-8">
           <Link
             to={backTo}
             aria-label="Zamknij"
@@ -148,7 +148,7 @@ export default function Login() {
                         setPassword(account.password);
                         loginWithCredentials(account.email, account.password);
                       }}
-                      className="rounded-lg bg-amber-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-400"
+                      className="w-full rounded-lg bg-amber-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-400 sm:w-auto"
                     >
                       Zaloguj jako {account.label}
                     </button>

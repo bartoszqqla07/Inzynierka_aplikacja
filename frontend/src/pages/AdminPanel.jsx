@@ -598,11 +598,11 @@ export default function AdminPanel() {
     previousMonthCount > 0 ? Math.round((monthDelta / previousMonthCount) * 100) : null;
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[260px_minmax(0,1fr)]">
+    <div className="grid gap-4 lg:gap-6 lg:grid-cols-[260px_minmax(0,1fr)]">
       <aside className="h-fit rounded-2xl border border-slate-200/60 bg-white/70 p-4 shadow-sm">
         <div className="text-xs uppercase tracking-wide text-slate-400">Salony</div>
         {error && <div className="mt-2 text-xs text-rose-600">{error}</div>}
-        <div className="mt-3 grid gap-2">
+        <div className="mt-3 flex gap-2 overflow-x-auto pb-1 lg:grid lg:overflow-visible lg:pb-0">
           {salons.map((salon) => (
             <button
               key={salon.id}
@@ -611,7 +611,7 @@ export default function AdminPanel() {
                 setIsCreateMode(false);
                 setSelectedId(salon.id);
               }}
-              className={`rounded-xl border px-3 py-2 text-left text-sm font-semibold transition ${
+              className={`min-w-[220px] rounded-xl border px-3 py-2 text-left text-sm font-semibold transition lg:min-w-0 ${
                 !isCreateMode && selectedId === salon.id
                   ? "border-slate-900 bg-slate-900 text-white"
                   : "border-slate-200 bg-white/80 text-slate-700 hover:border-slate-400"
@@ -627,7 +627,7 @@ export default function AdminPanel() {
               setIsCreateMode(true);
               setStatusMsg("");
             }}
-            className={`rounded-xl border px-3 py-2 text-left text-sm font-semibold transition ${
+            className={`min-w-[220px] rounded-xl border px-3 py-2 text-left text-sm font-semibold transition lg:min-w-0 ${
               isCreateMode
                 ? "border-slate-900 bg-slate-900 text-white"
                 : "border-slate-200 bg-white/80 text-slate-700 hover:border-slate-400"
@@ -649,10 +649,10 @@ export default function AdminPanel() {
         )}
         {isDemoMode && demoSystemStats && (
           <>
-            <div className="rounded-2xl border border-amber-200/70 bg-amber-50/70 p-5 shadow-sm">
+            <div className="rounded-2xl border border-amber-200/70 bg-amber-50/70 p-4 shadow-sm sm:p-5">
               <div className="text-xs uppercase tracking-wide text-amber-700">Panel admina demo</div>
               <h2 className="mt-1 text-xl font-semibold text-slate-900">Statystyki systemu</h2>
-              <div className="mt-4 grid gap-3 md:grid-cols-5">
+              <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
                 {[
                   { label: "Salony", value: demoSystemStats.totalSalons },
                   { label: "Uzytkownicy", value: demoSystemStats.totalUsers },
@@ -673,7 +673,7 @@ export default function AdminPanel() {
                     {demoSystemStats.usersByRole.map((item) => (
                       <div
                         key={item.role}
-                        className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+                        className="flex flex-col gap-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm sm:flex-row sm:items-center sm:justify-between"
                       >
                         <span>{item.role}</span>
                         <span className="font-semibold text-slate-900">{item.count}</span>
@@ -687,7 +687,7 @@ export default function AdminPanel() {
                     {demoSystemStats.salonsByCity.map((item) => (
                       <div
                         key={item.city}
-                        className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+                        className="flex flex-col gap-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm sm:flex-row sm:items-center sm:justify-between"
                       >
                         <span>{item.city}</span>
                         <span className="font-semibold text-slate-900">{item.count}</span>
@@ -698,7 +698,7 @@ export default function AdminPanel() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-slate-200/60 bg-white/70 p-5 shadow-sm">
+            <div className="rounded-2xl border border-slate-200/60 bg-white/70 p-4 shadow-sm sm:p-5">
               <div className="text-xs uppercase tracking-wide text-slate-400">Uzytkownicy demo</div>
               <h2 className="mt-1 text-xl font-semibold text-slate-900">Lista kont</h2>
               <div className="mt-4 grid gap-3 md:grid-cols-2">
@@ -720,8 +720,8 @@ export default function AdminPanel() {
           </>
         )}
         {isCreateMode && (
-        <div className="rounded-2xl border border-slate-200/60 bg-white/70 p-5 shadow-sm">
-          <div className="flex items-center justify-between">
+        <div className="rounded-2xl border border-slate-200/60 bg-white/70 p-4 shadow-sm sm:p-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <div className="text-xs uppercase tracking-wide text-slate-400">Nowy salon</div>
               <h2 className="text-xl font-semibold text-slate-900">Dodaj salon</h2>
@@ -729,7 +729,7 @@ export default function AdminPanel() {
             <button
               type="button"
               onClick={addSalon}
-              className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+              className="w-full rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 sm:w-auto"
             >
               Dodaj salon
             </button>

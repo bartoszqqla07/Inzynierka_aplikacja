@@ -457,17 +457,17 @@ export default function OwnerPanel() {
     previousMonthCount > 0 ? Math.round((monthDelta / previousMonthCount) * 100) : null;
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[260px_minmax(0,1fr)]">
+    <div className="grid gap-4 lg:gap-6 lg:grid-cols-[260px_minmax(0,1fr)]">
       <aside className="h-fit rounded-2xl border border-slate-200/60 bg-white/70 p-4 shadow-sm">
         <div className="text-xs uppercase tracking-wide text-slate-400">Moje salony</div>
         {error && <div className="mt-2 text-xs text-rose-600">{error}</div>}
-        <div className="mt-3 grid gap-2">
+        <div className="mt-3 flex gap-2 overflow-x-auto pb-1 lg:grid lg:overflow-visible lg:pb-0">
           {salons.map((salon) => (
             <button
               key={salon.id}
               type="button"
               onClick={() => setSelectedId(salon.id)}
-              className={`rounded-xl border px-3 py-2 text-left text-sm font-semibold transition ${
+              className={`min-w-[220px] rounded-xl border px-3 py-2 text-left text-sm font-semibold transition lg:min-w-0 ${
                 selectedId === salon.id
                   ? "border-slate-900 bg-slate-900 text-white"
                   : "border-slate-200 bg-white/80 text-slate-700 hover:border-slate-400"
@@ -481,7 +481,7 @@ export default function OwnerPanel() {
       </aside>
 
       <section className="space-y-6">
-        <div className="rounded-2xl border border-slate-200/60 bg-white/70 p-5 shadow-sm">
+        <div className="rounded-2xl border border-slate-200/60 bg-white/70 p-4 shadow-sm sm:p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <div className="text-xs uppercase tracking-wide text-slate-400">Statystyki salonu</div>
@@ -540,7 +540,7 @@ export default function OwnerPanel() {
                     const width =
                       maxMonthlyCount > 0 ? Math.max((item.count / maxMonthlyCount) * 100, item.count > 0 ? 6 : 0) : 0;
                     return (
-                      <div key={item.month} className="grid items-center gap-2 sm:grid-cols-[72px_1fr_40px]">
+                      <div key={item.month} className="grid items-center gap-1 sm:gap-2 sm:grid-cols-[72px_1fr_40px]">
                         <div className="text-xs text-slate-500">{item.label}</div>
                         <div className="h-3 rounded-full bg-slate-100">
                           <div
@@ -548,7 +548,7 @@ export default function OwnerPanel() {
                             style={{ width: `${width}%` }}
                           />
                         </div>
-                        <div className="text-right text-xs font-semibold text-slate-700">
+                        <div className="text-left text-xs font-semibold text-slate-700 sm:text-right">
                           {item.count}
                         </div>
                       </div>
@@ -566,7 +566,7 @@ export default function OwnerPanel() {
                     {salonStats.topServices.map((service) => (
                       <div
                         key={service.serviceId}
-                        className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+                        className="flex flex-col gap-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm sm:flex-row sm:items-center sm:justify-between"
                       >
                         <span className="text-slate-700">{service.name}</span>
                         <span className="font-semibold text-slate-900">{service.count}</span>
@@ -581,8 +581,8 @@ export default function OwnerPanel() {
           ) : null}
         </div>
 
-        <div className="rounded-2xl border border-slate-200/60 bg-white/70 p-5 shadow-sm">
-          <div className="flex items-center justify-between">
+        <div className="rounded-2xl border border-slate-200/60 bg-white/70 p-4 shadow-sm sm:p-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <div className="text-xs uppercase tracking-wide text-slate-400">Dane salonu</div>
               <h1 className="text-xl font-semibold text-slate-900">{selectedSalon?.name}</h1>
@@ -590,7 +590,7 @@ export default function OwnerPanel() {
             <button
               type="button"
               onClick={updateSalon}
-              className="rounded-xl bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-500"
+              className="w-full rounded-xl bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-500 sm:w-auto"
             >
               Zapisz
             </button>
@@ -680,7 +680,7 @@ export default function OwnerPanel() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-slate-200/60 bg-white/70 p-5 shadow-sm">
+        <div className="rounded-2xl border border-slate-200/60 bg-white/70 p-4 shadow-sm sm:p-5">
           <div className="text-xs uppercase tracking-wide text-slate-400">Zdjecia</div>
           <div className="mt-3 grid gap-2">
             {selectedSalon?.images?.map((img) => (
@@ -688,7 +688,7 @@ export default function OwnerPanel() {
                 key={img.id}
                 className="grid items-center gap-3 rounded-xl border border-slate-200 bg-white/80 p-2 text-xs sm:grid-cols-[72px_1fr_auto]"
               >
-                <div className="h-16 w-18 overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+                <div className="h-16 w-16 overflow-hidden rounded-lg border border-slate-200 bg-slate-50 sm:w-[72px]">
                   <img
                     src={img.url}
                     alt="Zdjecie salonu"
@@ -700,7 +700,7 @@ export default function OwnerPanel() {
                 <div className="min-w-0 text-slate-600">
                   <div className="truncate">{img.url}</div>
                 </div>
-                <div className="flex items-center gap-2 justify-self-end">
+                <div className="flex flex-wrap items-center gap-2 justify-self-start sm:justify-self-end">
                   <button
                     type="button"
                     onClick={() => setMainImage(img.id)}
@@ -724,7 +724,7 @@ export default function OwnerPanel() {
               </div>
             ))}
           </div>
-          <div className="mt-3 grid gap-2 md:grid-cols-[1fr_auto_auto]">
+          <div className="mt-3 grid gap-2 sm:grid-cols-[1fr_auto] lg:grid-cols-[1fr_auto_auto]">
             <input
               type="file"
               accept="image/jpeg,image/png"
@@ -750,7 +750,7 @@ export default function OwnerPanel() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-slate-200/60 bg-white/70 p-5 shadow-sm">
+        <div className="rounded-2xl border border-slate-200/60 bg-white/70 p-4 shadow-sm sm:p-5">
           <div className="text-xs uppercase tracking-wide text-slate-400">Uslugi</div>
           <div className="mt-3 grid gap-2">
             {selectedSalon?.services?.map((service) => (
@@ -790,14 +790,14 @@ export default function OwnerPanel() {
                 <button
                   type="button"
                   onClick={() => updateService(service.id)}
-                  className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs font-semibold text-slate-700"
+                  className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs font-semibold text-slate-700 md:w-auto"
                 >
                   Zapisz
                 </button>
                 <button
                   type="button"
                   onClick={() => deleteService(service.id)}
-                  className="rounded-lg border border-rose-200 bg-rose-50 px-2 py-1 text-xs font-semibold text-rose-700"
+                  className="w-full rounded-lg border border-rose-200 bg-rose-50 px-2 py-1 text-xs font-semibold text-rose-700 md:w-auto"
                 >
                   Usun
                 </button>
@@ -805,7 +805,7 @@ export default function OwnerPanel() {
             ))}
           </div>
 
-          <div className="mt-4 grid gap-2 md:grid-cols-[2fr_1fr_1fr_auto]">
+          <div className="mt-4 grid gap-2 sm:grid-cols-2 md:grid-cols-[2fr_1fr_1fr_auto]">
             <input
               value={newService.name}
               onChange={(e) => setNewService((prev) => ({ ...prev, name: e.target.value }))}
@@ -827,7 +827,7 @@ export default function OwnerPanel() {
             <button
               type="button"
               onClick={addService}
-              className="rounded-lg bg-teal-600 px-3 py-2 text-xs font-semibold text-white hover:bg-teal-500"
+              className="w-full rounded-lg bg-teal-600 px-3 py-2 text-xs font-semibold text-white hover:bg-teal-500 sm:w-auto"
             >
               Dodaj
             </button>

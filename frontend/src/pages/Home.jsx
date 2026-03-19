@@ -79,7 +79,7 @@ export default function Home() {
 
   return (
     <div className="space-y-8">
-      <section className="relative overflow-hidden rounded-3xl border border-slate-200/60 bg-white/60 p-8 shadow-sm backdrop-blur">
+      <section className="relative overflow-hidden rounded-3xl border border-slate-200/60 bg-white/60 p-5 shadow-sm backdrop-blur sm:p-8">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-teal-200 via-slate-200 to-teal-100" />
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="text-3xl font-semibold text-slate-900 sm:text-4xl">
@@ -138,7 +138,7 @@ export default function Home() {
               type="button"
               aria-label="Poprzednie salony"
               onClick={() => sliderRef.current?.scrollBy({ left: -360, behavior: "smooth" })}
-              className="absolute left-0 top-1/2 z-10 -translate-y-1/2 rounded-full border border-slate-200 bg-white/80 p-2 text-slate-600 opacity-0 shadow-sm transition group-hover:opacity-100 hover:bg-white hover:text-slate-900"
+              className="absolute left-0 top-1/2 z-10 hidden -translate-y-1/2 rounded-full border border-slate-200 bg-white/80 p-2 text-slate-600 opacity-0 shadow-sm transition group-hover:opacity-100 hover:bg-white hover:text-slate-900 md:block"
             >
               ‹
             </button>
@@ -146,15 +146,15 @@ export default function Home() {
               type="button"
               aria-label="Nastepne salony"
               onClick={() => sliderRef.current?.scrollBy({ left: 360, behavior: "smooth" })}
-              className="absolute right-0 top-1/2 z-10 -translate-y-1/2 rounded-full border border-slate-200 bg-white/80 p-2 text-slate-600 opacity-0 shadow-sm transition group-hover:opacity-100 hover:bg-white hover:text-slate-900"
+              className="absolute right-0 top-1/2 z-10 hidden -translate-y-1/2 rounded-full border border-slate-200 bg-white/80 p-2 text-slate-600 opacity-0 shadow-sm transition group-hover:opacity-100 hover:bg-white hover:text-slate-900 md:block"
             >
               ›
             </button>
-            <div className="mx-auto max-w-5xl px-10">
+            <div className="mx-auto max-w-5xl px-0 sm:px-6 md:px-10">
               <div className="flex justify-center">
                 <div
                   ref={sliderRef}
-                  className="flex max-w-[56rem] gap-4 overflow-x-auto pb-3 pt-1 scroll-smooth [scrollbar-width:thin] snap-x snap-mandatory"
+                  className="flex max-w-[56rem] gap-4 overflow-x-auto px-1 pb-3 pt-1 scroll-smooth [scrollbar-width:thin] snap-x snap-mandatory"
                 >
                 {filteredSalons.map((salon) => (
                   <div key={salon.id} className="snap-center">
@@ -168,7 +168,7 @@ export default function Home() {
         )}
       </section>
 
-      <section className="relative overflow-hidden rounded-3xl border border-slate-200/60 bg-white/60 p-6 shadow-sm backdrop-blur">
+      <section className="relative overflow-hidden rounded-3xl border border-slate-200/60 bg-white/60 p-5 shadow-sm backdrop-blur sm:p-6">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-teal-200 via-slate-200 to-teal-100" />
         <div className="grid gap-6">
           <div className="text-center">
@@ -201,7 +201,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden rounded-3xl border border-slate-200/60 bg-white/60 p-6 shadow-sm backdrop-blur">
+      <section className="relative overflow-hidden rounded-3xl border border-slate-200/60 bg-white/60 p-5 shadow-sm backdrop-blur sm:p-6">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-teal-200 via-slate-200 to-teal-100" />
         <div className="text-center">
           <div className="text-xs uppercase tracking-wide text-slate-400">
@@ -222,7 +222,7 @@ export default function Home() {
             onClick={() =>
               testimonialsRef.current?.scrollBy({ left: -360, behavior: "smooth" })
             }
-            className="absolute left-0 top-1/2 z-10 -translate-y-1/2 rounded-full border border-slate-200 bg-white/80 p-2 text-slate-600 opacity-0 shadow-sm transition group-hover:opacity-100 hover:bg-white hover:text-slate-900"
+            className="absolute left-0 top-1/2 z-10 hidden -translate-y-1/2 rounded-full border border-slate-200 bg-white/80 p-2 text-slate-600 opacity-0 shadow-sm transition group-hover:opacity-100 hover:bg-white hover:text-slate-900 md:block"
           >
             ‹
           </button>
@@ -232,13 +232,13 @@ export default function Home() {
             onClick={() =>
               testimonialsRef.current?.scrollBy({ left: 360, behavior: "smooth" })
             }
-            className="absolute right-0 top-1/2 z-10 -translate-y-1/2 rounded-full border border-slate-200 bg-white/80 p-2 text-slate-600 opacity-0 shadow-sm transition group-hover:opacity-100 hover:bg-white hover:text-slate-900"
+            className="absolute right-0 top-1/2 z-10 hidden -translate-y-1/2 rounded-full border border-slate-200 bg-white/80 p-2 text-slate-600 opacity-0 shadow-sm transition group-hover:opacity-100 hover:bg-white hover:text-slate-900 md:block"
           >
             ›
           </button>
           <div
             ref={testimonialsRef}
-            className="flex gap-4 overflow-x-auto pb-3 pt-1 scroll-smooth [scrollbar-width:thin] snap-x snap-mandatory px-8"
+            className="flex gap-4 overflow-x-auto pb-3 pt-1 scroll-smooth [scrollbar-width:thin] snap-x snap-mandatory px-1 sm:px-8"
           >
             {testimonials.length === 0 ? (
               <div className="w-full rounded-2xl border border-slate-200/60 bg-white/80 p-5 text-center text-sm text-slate-600">
@@ -250,7 +250,7 @@ export default function Home() {
               return (
                 <div key={item.id} className="snap-start">
                   <div
-                    className={`relative w-80 shrink-0 rounded-2xl border border-slate-200/80 bg-white/90 p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md flex flex-col ${
+                    className={`relative w-[min(20rem,82vw)] shrink-0 rounded-2xl border border-slate-200/80 bg-white/90 p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md flex flex-col sm:w-80 ${
                       isExpanded ? "h-auto min-h-[18rem]" : "h-[18rem]"
                     }`}
                   >

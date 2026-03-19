@@ -438,19 +438,19 @@ export default function Bookings() {
     <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-slate-50/70 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] sm:p-6">
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(20,184,166,0.18),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(15,23,42,0.12),_transparent_60%)]" />
       <div className="pointer-events-none absolute inset-0 -z-10 opacity-40 [background-image:linear-gradient(135deg,rgba(148,163,184,0.25)_1px,transparent_1px)] [background-size:28px_28px]" />
-      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
-      <section className="rounded-2xl border border-slate-200/60 bg-white/60 p-4 text-center shadow-sm backdrop-blur">
-        <div className="relative flex items-center justify-center">
+      <div className="grid items-start gap-4 lg:gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
+      <section className="rounded-2xl border border-slate-200/60 bg-white/60 p-4 text-center shadow-sm backdrop-blur sm:p-5">
+        <div className="relative flex flex-wrap items-center justify-center gap-2 sm:gap-0">
           {bookingSalonId && (
             <Link
               to={`/salons/${bookingSalonId}`}
               aria-label="Powrot"
-              className="absolute left-0 inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white/80 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-white"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white/80 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-white sm:absolute sm:left-0"
             >
               &lt;
             </Link>
           )}
-          <h1 className="text-2xl font-semibold text-slate-900">Nowa rezerwacja</h1>
+          <h1 className="text-xl font-semibold text-slate-900 sm:text-2xl">Nowa rezerwacja</h1>
         </div>
         <p className="mt-1 text-sm text-slate-600">
           Prosimy o podanie prawdziwych danych.
@@ -472,7 +472,7 @@ export default function Bookings() {
           </div>
         )}
 
-        <form onSubmit={submitBooking} className="mt-5 grid justify-items-center gap-3">
+        <form onSubmit={submitBooking} className="mt-5 grid justify-items-center gap-3 sm:gap-4">
           <label className="grid w-full max-w-sm gap-1 text-center">
             <span className="text-xs text-slate-500">Usluga</span>
             <select
@@ -533,11 +533,11 @@ export default function Bookings() {
 
               {isDateTimeOpen && (
                 <div
-                  className="mt-2 rounded-2xl border border-slate-200/60 bg-white/60 p-3 shadow-lg backdrop-blur"
+                  className="absolute left-0 right-0 z-20 mt-2 rounded-2xl border border-slate-200/60 bg-white/95 p-3 shadow-lg backdrop-blur"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <div className="grid gap-3">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                       <span className="text-xs text-slate-500">Data</span>
                       <div className="flex items-center gap-2">
                         <button
@@ -579,7 +579,7 @@ export default function Bookings() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-7 gap-2 text-xs text-slate-400">
+                    <div className="grid grid-cols-7 gap-1 text-[11px] text-slate-400 sm:gap-2 sm:text-xs">
                       {["Pn", "Wt", "Sr", "Cz", "Pt", "Sb", "Nd"].map((label) => (
                         <div key={label} className="text-center font-semibold">
                           {label}
@@ -587,7 +587,7 @@ export default function Bookings() {
                       ))}
                     </div>
 
-                    <div className="grid grid-cols-7 gap-2">
+                    <div className="grid grid-cols-7 gap-1 sm:gap-2">
                       {buildCalendarDays(calendarMonth).map((day, index) => {
                         if (!day) {
                           return <div key={`empty-${index}`} />;
@@ -610,7 +610,7 @@ export default function Bookings() {
                               setBookingDate(formatLocalDate(day));
                               setBookingTime("");
                             }}
-                            className={`rounded-lg border px-2 py-2 text-xs font-semibold transition ${
+                            className={`rounded-lg border px-1.5 py-2 text-[11px] font-semibold transition sm:px-2 sm:text-xs ${
                               isSelected
                                 ? "border-slate-900 bg-slate-900 text-white"
                                 : isPast || isClosed
@@ -633,7 +633,7 @@ export default function Bookings() {
                       </span>
                     ) : (
                       <>
-                        <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
+                        <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6">
                           {visibleTimes.map((time) => (
                             <button
                               key={time}
@@ -646,7 +646,7 @@ export default function Bookings() {
                               }}
                               aria-pressed={bookingTime === time}
                               aria-disabled={blockedTimes.has(time)}
-                              className={`rounded-lg border px-2 py-2 text-xs font-semibold transition ${
+                              className={`rounded-lg border px-2 py-2 text-[11px] font-semibold transition sm:text-xs ${
                                 bookingTime === time
                                   ? "border-slate-900 bg-slate-900 text-white"
                                   : blockedTimes.has(time)

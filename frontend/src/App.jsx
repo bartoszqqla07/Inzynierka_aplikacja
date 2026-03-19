@@ -43,14 +43,14 @@ export default function App() {
         <>
           <header className="sticky top-0 z-10">
             <div className="mx-auto w-full max-w-6xl px-4 pt-4">
-              <div className="flex items-center justify-between rounded-3xl border border-slate-200/60 bg-white/60 px-4 py-4 shadow-sm backdrop-blur sm:px-5">
-                <Link to="/" className="flex items-center gap-3">
+              <div className="flex flex-col gap-4 rounded-3xl border border-slate-200/60 bg-white/60 px-4 py-4 shadow-sm backdrop-blur sm:px-5 lg:flex-row lg:items-center lg:justify-between">
+                <Link to="/" className="flex min-w-0 items-center gap-3">
                   <img
                     src={bookmeLogo}
                     alt="BookME logo"
                     className="h-12 w-12 rounded-2xl object-contain shadow-sm sm:h-14 sm:w-14"
                   />
-                  <div className="text-lg font-semibold leading-tight text-slate-900">
+                  <div className="min-w-0 text-base font-semibold leading-tight text-slate-900 sm:text-lg">
                     BookME - System rezerwacji wizyt
                   </div>
                 </Link>
