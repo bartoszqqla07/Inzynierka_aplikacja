@@ -1,4 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
+import { isDemoMode } from "../config/demoMode";
+import {
+  addDemoSalonImage,
+  addDemoService,
+  deleteDemoImage,
+  deleteDemoService,
+  getDemoOwnerSalons,
+  getDemoSalonStats,
+  setDemoMainImage,
+  updateDemoSalon,
+  updateDemoService,
+} from "../demo/demoApi";
 import { useAuth } from "../lib/auth";
 
 const API = "http://localhost:5000";
@@ -75,13 +87,17 @@ export default function OwnerPanel() {
     try {
       setLoading(true);
       setError("");
-      const res = await fetch(`${API}/owner/salons`, {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-      if (!res.ok) throw new Error("Blad pobierania salonow");
-      const data = await res.json();
+      const data = isDemoMode
+        ? await getDemoOwnerSalons(session.user.id)
+        : await (async () => {
+            const res = await fetch(`${API}/owner/salons`, {
+              headers: {
+                Authorization: `Bearer ${session.access_token}`,
+              },
+            });
+            if (!res.ok) throw new Error("Blad pobierania salonow");
+            return res.json();
+          })();
       setSalons(data);
       if (data.length && !selectedId) {
         setSelectedId(data[0].id);
@@ -137,13 +153,17 @@ export default function OwnerPanel() {
       try {
         setStatsLoading(true);
         setStatsError("");
-        const res = await fetch(`${API}/owner/salons/${selectedId}/stats?months=${statsMonths}`, {
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
-        });
-        if (!res.ok) throw new Error("Blad pobierania statystyk");
-        const data = await res.json();
+        const data = isDemoMode
+          ? await getDemoSalonStats(selectedId, statsMonths)
+          : await (async () => {
+              const res = await fetch(`${API}/owner/salons/${selectedId}/stats?months=${statsMonths}`, {
+                headers: {
+                  Authorization: `Bearer ${session.access_token}`,
+                },
+              });
+              if (!res.ok) throw new Error("Blad pobierania statystyk");
+              return res.json();
+            })();
         if (isMounted) setSalonStats(data);
       } catch {
         if (isMounted) {
@@ -175,15 +195,19 @@ export default function OwnerPanel() {
         hours: toHoursPayload(form.hours),
       };
 
-      const res = await fetch(`${API}/owner/salons/${selectedId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error("Update failed");
+      if (isDemoMode) {
+        await updateDemoSalon(selectedId, payload);
+      } else {
+        const res = await fetch(`${API}/owner/salons/${selectedId}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error("Update failed");
+      }
       setStatusMsg("Zapisano zmiany salonu.");
       await loadSalons();
     } catch {
@@ -195,15 +219,19 @@ export default function OwnerPanel() {
     if (!selectedId || !session || !url) return;
     setStatusMsg("");
     try {
-      const res = await fetch(`${API}/owner/salons/${selectedId}/images`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({ url, setAsMain: newImageMain }),
-      });
-      if (!res.ok) throw new Error("Add image failed");
+      if (isDemoMode) {
+        await addDemoSalonImage(selectedId, url, newImageMain);
+      } else {
+        const res = await fetch(`${API}/owner/salons/${selectedId}/images`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ url, setAsMain: newImageMain }),
+        });
+        if (!res.ok) throw new Error("Add image failed");
+      }
       setNewImageFile(null);
       setNewImageMain(false);
       await loadSalons();
@@ -288,13 +316,17 @@ export default function OwnerPanel() {
     if (!session) return;
     setStatusMsg("");
     try {
-      const res = await fetch(`${API}/owner/images/${imageId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-      if (!res.ok) throw new Error("Delete image failed");
+      if (isDemoMode) {
+        await deleteDemoImage(imageId);
+      } else {
+        const res = await fetch(`${API}/owner/images/${imageId}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
+        if (!res.ok) throw new Error("Delete image failed");
+      }
       await loadSalons();
     } catch {
       setStatusMsg("Blad usuwania zdjecia.");
@@ -305,15 +337,19 @@ export default function OwnerPanel() {
     if (!session || !selectedId) return;
     setStatusMsg("");
     try {
-      const res = await fetch(`${API}/owner/salons/${selectedId}/main-image`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({ imageId }),
-      });
-      if (!res.ok) throw new Error("Main image update failed");
+      if (isDemoMode) {
+        await setDemoMainImage(selectedId, imageId);
+      } else {
+        const res = await fetch(`${API}/owner/salons/${selectedId}/main-image`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ imageId }),
+        });
+        if (!res.ok) throw new Error("Main image update failed");
+      }
       await loadSalons();
     } catch {
       setStatusMsg("Blad ustawiania zdjecia glownego.");
@@ -333,15 +369,19 @@ export default function OwnerPanel() {
         setStatusMsg("Uzupelnij dane nowej uslugi.");
         return;
       }
-      const res = await fetch(`${API}/owner/salons/${selectedId}/services`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error("Add service failed");
+      if (isDemoMode) {
+        await addDemoService(selectedId, payload);
+      } else {
+        const res = await fetch(`${API}/owner/salons/${selectedId}/services`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error("Add service failed");
+      }
       setNewService({ name: "", duration: "", price: "" });
       await loadSalons();
     } catch {
@@ -360,15 +400,19 @@ export default function OwnerPanel() {
         duration: Number(draft.duration),
         price: Number(draft.price),
       };
-      const res = await fetch(`${API}/owner/services/${serviceId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error("Update service failed");
+      if (isDemoMode) {
+        await updateDemoService(serviceId, payload);
+      } else {
+        const res = await fetch(`${API}/owner/services/${serviceId}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error("Update service failed");
+      }
       await loadSalons();
     } catch {
       setStatusMsg("Blad zapisu uslugi.");
@@ -379,13 +423,17 @@ export default function OwnerPanel() {
     if (!session) return;
     setStatusMsg("");
     try {
-      const res = await fetch(`${API}/owner/services/${serviceId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-      if (!res.ok) throw new Error("Delete service failed");
+      if (isDemoMode) {
+        await deleteDemoService(serviceId);
+      } else {
+        const res = await fetch(`${API}/owner/services/${serviceId}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
+        if (!res.ok) throw new Error("Delete service failed");
+      }
       await loadSalons();
     } catch {
       setStatusMsg("Blad usuwania uslugi.");

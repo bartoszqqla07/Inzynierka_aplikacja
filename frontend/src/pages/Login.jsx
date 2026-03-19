@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { isDemoMode } from "../config/demoMode";
 import { supabase } from "../lib/supabaseClient";
+
+const demoAccounts = [
+  { label: "USER", email: "user@test.pl", password: "123456" },
+  { label: "OWNER", email: "owner@test.pl", password: "123456" },
+  { label: "ADMIN", email: "admin@test.pl", password: "123456" },
+];
 
 export default function Login() {
   const location = useLocation();
@@ -13,25 +20,30 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const canSubmit = email.trim().length > 0 && password.trim().length > 0;
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
+  const loginWithCredentials = async (nextEmail, nextPassword) => {
     setErrorMsg("");
     setInfoMsg("");
     setIsLoading(true);
 
     const { error } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
+      email: nextEmail.trim(),
+      password: nextPassword,
     });
 
     setIsLoading(false);
 
     if (error) {
       setErrorMsg("Niepoprawny email/haslo");
-      return;
+      return false;
     }
 
     navigate(backTo, { replace: true });
+    return true;
+  };
+
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    await loginWithCredentials(email, password);
   };
 
   return (
@@ -92,25 +104,59 @@ export default function Login() {
             >
               {isLoading ? "Logowanie..." : "Zaloguj"}
             </button>
-            <button
-              type="button"
-              onClick={() =>
-                navigate("/forgot-password", {
-                  state: { from: backTo, prefillEmail: email.trim() },
-                })
-              }
-              className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-            >
-              Nie pamietam hasla
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate("/register", { state: { from: backTo } })}
-              className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-            >
-              Nie mam konta
-            </button>
+            {!isDemoMode && (
+              <>
+                <button
+                  type="button"
+                  onClick={() =>
+                    navigate("/forgot-password", {
+                      state: { from: backTo, prefillEmail: email.trim() },
+                    })
+                  }
+                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                >
+                  Nie pamietam hasla
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate("/register", { state: { from: backTo } })}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                >
+                  Nie mam konta
+                </button>
+              </>
+            )}
           </form>
+
+          {isDemoMode && (
+            <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50/80 p-4 text-left shadow-sm">
+              <div className="text-xs uppercase tracking-wide text-amber-700">Tryb demo</div>
+              <p className="mt-2 text-sm text-amber-900">
+                Uzyj jednego z gotowych kont albo kliknij szybkie logowanie.
+              </p>
+              <div className="mt-3 grid gap-2 text-xs text-amber-900">
+                {demoAccounts.map((account) => (
+                  <div
+                    key={account.email}
+                    className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-amber-200 bg-white/80 px-3 py-2"
+                  >
+                    <span>{account.email} / {account.password}</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEmail(account.email);
+                        setPassword(account.password);
+                        loginWithCredentials(account.email, account.password);
+                      }}
+                      className="rounded-lg bg-amber-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-400"
+                    >
+                      Zaloguj jako {account.label}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>

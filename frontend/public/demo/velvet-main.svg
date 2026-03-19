@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+  <rect width="1200" height="720" fill="#fdf2f8" />
+  <circle cx="1020" cy="170" r="145" fill="#f9a8d4" opacity="0.55" />
+  <circle cx="190" cy="530" r="170" fill="#fecdd3" opacity="0.65" />
+  <text x="120" y="250" font-family="Arial, sans-serif" font-size="70" fill="#9d174d" font-weight="700">Velvet Hair &amp; Beauty</text>
+  <text x="120" y="325" font-family="Arial, sans-serif" font-size="32" fill="#475569">Demo placeholder w folderze public/demo</text>
+</svg>

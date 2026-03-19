@@ -1,5 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { isDemoMode } from "../config/demoMode";
+import {
+  cancelDemoUserBooking,
+  getDemoBookingsBySalon,
+  getDemoBookingsByUser,
+  getDemoSalons,
+  getDemoServices,
+  updateDemoUserBooking,
+} from "../demo/demoApi";
+import { getDemoUser } from "../demo/demoAuth";
 import { supabase } from "../lib/supabaseClient";
 import ConfirmDialog from "../components/ConfirmDialog";
 
@@ -232,13 +242,18 @@ export default function MyBookings() {
       try {
         setError("");
         setLoading(true);
-        const res = await fetch(`${API}/me/bookings`, {
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
-        });
-        if (!res.ok) throw new Error("Blad pobierania rezerwacji");
-        const data = await res.json();
+        const demoUser = getDemoUser();
+        const data = isDemoMode
+          ? await getDemoBookingsByUser(demoUser?.id)
+          : await (async () => {
+              const res = await fetch(`${API}/me/bookings`, {
+                headers: {
+                  Authorization: `Bearer ${session.access_token}`,
+                },
+              });
+              if (!res.ok) throw new Error("Blad pobierania rezerwacji");
+              return res.json();
+            })();
         setBookings(data);
       } catch {
         setError("Nie udalo sie pobrac rezerwacji.");
@@ -254,9 +269,13 @@ export default function MyBookings() {
     async function loadSalons() {
       if (!session) return;
       try {
-        const res = await fetch(`${API}/salons`);
-        if (!res.ok) throw new Error("Blad pobierania salonow");
-        const data = await res.json();
+        const data = isDemoMode
+          ? await getDemoSalons()
+          : await (async () => {
+              const res = await fetch(`${API}/salons`);
+              if (!res.ok) throw new Error("Blad pobierania salonow");
+              return res.json();
+            })();
         setSalons(data);
       } catch {
         setSalons([]);
@@ -290,9 +309,13 @@ export default function MyBookings() {
     }
     setServicesLoading(true);
     try {
-      const res = await fetch(`${API}/salons/${salonId}/services`);
-      if (!res.ok) throw new Error("Blad pobierania uslug");
-      const data = await res.json();
+      const data = isDemoMode
+        ? await getDemoServices(salonId)
+        : await (async () => {
+            const res = await fetch(`${API}/salons/${salonId}/services`);
+            if (!res.ok) throw new Error("Blad pobierania uslug");
+            return res.json();
+          })();
       setServices(data);
     } catch {
       setServices([]);
@@ -308,9 +331,13 @@ export default function MyBookings() {
     }
     setEditBookingsLoading(true);
     try {
-      const res = await fetch(`${API}/bookings?salonId=${salonId}`);
-      if (!res.ok) throw new Error("Blad pobierania rezerwacji");
-      const data = await res.json();
+      const data = isDemoMode
+        ? await getDemoBookingsBySalon(salonId)
+        : await (async () => {
+            const res = await fetch(`${API}/bookings?salonId=${salonId}`);
+            if (!res.ok) throw new Error("Blad pobierania rezerwacji");
+            return res.json();
+          })();
       setEditBookings(data);
     } catch {
       setEditBookings([]);
@@ -375,30 +402,38 @@ export default function MyBookings() {
     };
 
     try {
-      const res = await fetch(`${API}/me/bookings/${bookingId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) {
-        const details = await res.json().catch(() => ({}));
-        const msg = details?.error || "Blad aktualizacji rezerwacji.";
-        throw new Error(msg);
+      if (isDemoMode) {
+        await updateDemoUserBooking(bookingId, payload);
+      } else {
+        const res = await fetch(`${API}/me/bookings/${bookingId}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          const details = await res.json().catch(() => ({}));
+          const msg = details?.error || "Blad aktualizacji rezerwacji.";
+          throw new Error(msg);
+        }
       }
       setInfoMsg("Zapisano zmiany rezerwacji.");
       setEditingId(null);
-      const refreshed = await fetch(`${API}/me/bookings`, {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-      if (refreshed.ok) {
-        const data = await refreshed.json();
-        setBookings(data);
-      }
+      const demoUser = getDemoUser();
+      const refreshedData = isDemoMode
+        ? await getDemoBookingsByUser(demoUser?.id)
+        : await (async () => {
+            const refreshed = await fetch(`${API}/me/bookings`, {
+              headers: {
+                Authorization: `Bearer ${session.access_token}`,
+              },
+            });
+            if (!refreshed.ok) return null;
+            return refreshed.json();
+          })();
+      if (refreshedData) setBookings(refreshedData);
     } catch (err) {
       setError(err?.message || "Blad aktualizacji rezerwacji.");
     }
@@ -409,16 +444,20 @@ export default function MyBookings() {
     setError("");
     setInfoMsg("");
     try {
-      const res = await fetch(`${API}/me/bookings/${bookingId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-      if (!res.ok) {
-        const details = await res.json().catch(() => ({}));
-        const msg = details?.error || "Blad anulowania rezerwacji.";
-        throw new Error(msg);
+      if (isDemoMode) {
+        await cancelDemoUserBooking(bookingId);
+      } else {
+        const res = await fetch(`${API}/me/bookings/${bookingId}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
+        if (!res.ok) {
+          const details = await res.json().catch(() => ({}));
+          const msg = details?.error || "Blad anulowania rezerwacji.";
+          throw new Error(msg);
+        }
       }
       setInfoMsg("Wizyta zostala odwolana.");
       setBookings((prev) => prev.filter((b) => b.id !== bookingId));

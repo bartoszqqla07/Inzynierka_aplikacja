@@ -1,5 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { isDemoMode } from "../config/demoMode";
+import {
+  createDemoBooking,
+  getDemoBookingsBySalon,
+  getDemoSalonById,
+  getDemoServices,
+} from "../demo/demoApi";
+import { getDemoUser } from "../demo/demoAuth";
 import { supabase } from "../lib/supabaseClient";
 
 const API = "http://localhost:5000";
@@ -83,9 +91,13 @@ export default function Bookings() {
         return;
       }
       try {
-        const res = await fetch(`${API}/salons/${bookingSalonId}`);
-        if (!res.ok) throw new Error("Blad pobierania salonu");
-        const data = await res.json();
+        const data = isDemoMode
+          ? await getDemoSalonById(bookingSalonId)
+          : await (async () => {
+              const res = await fetch(`${API}/salons/${bookingSalonId}`);
+              if (!res.ok) throw new Error("Blad pobierania salonu");
+              return res.json();
+            })();
         setBookingSalon(data);
       } catch {
         setBookingSalon(null);
@@ -104,9 +116,13 @@ export default function Bookings() {
 
     try {
       setError("");
-      const res = await fetch(`${API}/salons/${bookingSalonId}/services`);
-      if (!res.ok) throw new Error("Blad pobierania uslug");
-      const data = await res.json();
+      const data = isDemoMode
+        ? await getDemoServices(bookingSalonId)
+        : await (async () => {
+            const res = await fetch(`${API}/salons/${bookingSalonId}/services`);
+            if (!res.ok) throw new Error("Blad pobierania uslug");
+            return res.json();
+          })();
       setServices(data);
     } catch {
       setError("Nie udalo sie pobrac uslug. Upewnij sie, ze backend dziala na :5000.");
@@ -117,9 +133,13 @@ export default function Bookings() {
     if (!bookingSalonId) return;
     try {
       setBookingsLoading(true);
-      const res = await fetch(`${API}/bookings?salonId=${bookingSalonId}`);
-      if (!res.ok) throw new Error("Blad pobierania rezerwacji");
-      const data = await res.json();
+      const data = isDemoMode
+        ? await getDemoBookingsBySalon(bookingSalonId)
+        : await (async () => {
+            const res = await fetch(`${API}/bookings?salonId=${bookingSalonId}`);
+            if (!res.ok) throw new Error("Blad pobierania rezerwacji");
+            return res.json();
+          })();
       setBookings(data);
     } catch {
       setError("Nie udalo sie pobrac rezerwacji.");
@@ -365,30 +385,40 @@ export default function Bookings() {
         dateTime: bookingDate && bookingTime ? `${bookingDate}T${bookingTime}:00` : "",
       };
 
-      const res = await fetch(`${API}/bookings`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (res.status === 409) {
-        setError("Termin zajety - wybierz inna godzine.");
-        return;
-      }
-
-      if (!res.ok) {
-        let details = "";
-        try {
-          const data = await res.json();
-          if (data?.error) details = ` (${data.error})`;
-        } catch {
-          // ignore parse errors
+      if (isDemoMode) {
+        // Demo bookings are stored locally so the whole flow works without backend/database.
+        const demoUser = getDemoUser();
+        if (!demoUser) {
+          setError("Zaloguj sie, aby zarezerwowac termin.");
+          return;
         }
-        setError(`Nie udalo sie zapisac rezerwacji.${details}`);
-        return;
+        await createDemoBooking({ ...payload, userId: demoUser.id });
+      } else {
+        const res = await fetch(`${API}/bookings`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (res.status === 409) {
+          setError("Termin zajety - wybierz inna godzine.");
+          return;
+        }
+
+        if (!res.ok) {
+          let details = "";
+          try {
+            const data = await res.json();
+            if (data?.error) details = ` (${data.error})`;
+          } catch {
+            // ignore parse errors
+          }
+          setError(`Nie udalo sie zapisac rezerwacji.${details}`);
+          return;
+        }
       }
 
       setClientName("");
@@ -398,7 +428,9 @@ export default function Bookings() {
       await loadBookings();
       setInfoMsg("Zarezerwowano. Twoja rezerwacja zostala zapisana.");
     } catch {
-      setError("Blad polaczenia z backendem (czy dziala :5000?)");
+      setError(
+        isDemoMode ? "Nie udalo sie zapisac rezerwacji demo." : "Blad polaczenia z backendem (czy dziala :5000?)"
+      );
     }
   }
 

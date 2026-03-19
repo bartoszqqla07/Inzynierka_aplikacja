@@ -1,4 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { isDemoMode } from "../config/demoMode";
+import {
+  cancelDemoScheduleBooking,
+  getDemoScheduleBookings,
+  updateDemoScheduleBooking,
+} from "../demo/demoApi";
 import { useAuth } from "../lib/auth";
 import ConfirmDialog from "../components/ConfirmDialog";
 
@@ -119,14 +125,18 @@ export default function Schedule() {
     try {
       setError("");
       setLoading(true);
-      const endpoint = user.role === "ADMIN" ? "/admin/bookings" : "/owner/bookings";
-      const res = await fetch(`${API}${endpoint}`, {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-      if (!res.ok) throw new Error("Blad pobierania rezerwacji");
-      const data = await res.json();
+      const data = isDemoMode
+        ? await getDemoScheduleBookings(user.role, user.id)
+        : await (async () => {
+            const endpoint = user.role === "ADMIN" ? "/admin/bookings" : "/owner/bookings";
+            const res = await fetch(`${API}${endpoint}`, {
+              headers: {
+                Authorization: `Bearer ${session.access_token}`,
+              },
+            });
+            if (!res.ok) throw new Error("Blad pobierania rezerwacji");
+            return res.json();
+          })();
       setBookings(data);
     } catch {
       setError("Nie udalo sie pobrac rezerwacji.");
@@ -239,23 +249,27 @@ export default function Schedule() {
       setInfoMsg("");
       setBusyId(bookingId);
 
-      const endpoint =
-        user.role === "ADMIN"
-          ? `/admin/bookings/${bookingId}`
-          : `/owner/bookings/${bookingId}`;
+      if (isDemoMode) {
+        await updateDemoScheduleBooking(bookingId, editTime);
+      } else {
+        const endpoint =
+          user.role === "ADMIN"
+            ? `/admin/bookings/${bookingId}`
+            : `/owner/bookings/${bookingId}`;
 
-      const res = await fetch(`${API}${endpoint}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({ time: editTime }),
-      });
+        const res = await fetch(`${API}${endpoint}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ time: editTime }),
+        });
 
-      if (!res.ok) {
-        const details = await res.json().catch(() => ({}));
-        throw new Error(details?.error || "Blad aktualizacji rezerwacji");
+        if (!res.ok) {
+          const details = await res.json().catch(() => ({}));
+          throw new Error(details?.error || "Blad aktualizacji rezerwacji");
+        }
       }
 
       setInfoMsg("Zmieniono termin wizyty.");
@@ -277,21 +291,25 @@ export default function Schedule() {
       setInfoMsg("");
       setBusyId(bookingId);
 
-      const endpoint =
-        user.role === "ADMIN"
-          ? `/admin/bookings/${bookingId}`
-          : `/owner/bookings/${bookingId}`;
+      if (isDemoMode) {
+        await cancelDemoScheduleBooking(bookingId);
+      } else {
+        const endpoint =
+          user.role === "ADMIN"
+            ? `/admin/bookings/${bookingId}`
+            : `/owner/bookings/${bookingId}`;
 
-      const res = await fetch(`${API}${endpoint}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
+        const res = await fetch(`${API}${endpoint}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
 
-      if (!res.ok) {
-        const details = await res.json().catch(() => ({}));
-        throw new Error(details?.error || "Blad anulowania rezerwacji");
+        if (!res.ok) {
+          const details = await res.json().catch(() => ({}));
+          throw new Error(details?.error || "Blad anulowania rezerwacji");
+        }
       }
 
       setInfoMsg("Wizyta zostala odwolana.");

@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import SalonCard from "../components/SalonCard";
+import { isDemoMode } from "../config/demoMode";
+import { getDemoReviews, getDemoSalons } from "../demo/demoApi";
 
 const API = "http://localhost:5000";
 
@@ -17,19 +19,28 @@ export default function Home() {
       try {
         setError("");
         setLoading(true);
-        const res = await fetch(`${API}/salons`);
-        if (!res.ok) throw new Error("Blad pobierania salonow");
-        const data = await res.json();
+        // Demo mode reads salons from src/demo instead of the backend API.
+        const data = isDemoMode
+          ? await getDemoSalons()
+          : await (async () => {
+              const res = await fetch(`${API}/salons`);
+              if (!res.ok) throw new Error("Blad pobierania salonow");
+              return res.json();
+            })();
         const mapped = data.map((salon) => ({
           ...salon,
           services: (salon.services || []).map((srv) => srv.name),
         }));
         setSalons(mapped);
 
-        const reviewsRes = await fetch(`${API}/reviews`);
-        if (reviewsRes.ok) {
-          const reviewsData = await reviewsRes.json();
-          setReviews(reviewsData);
+        if (isDemoMode) {
+          setReviews(await getDemoReviews());
+        } else {
+          const reviewsRes = await fetch(`${API}/reviews`);
+          if (reviewsRes.ok) {
+            const reviewsData = await reviewsRes.json();
+            setReviews(reviewsData);
+          }
         }
       } catch {
         setError("Nie udalo sie pobrac salonow.");
@@ -171,7 +182,7 @@ export default function Home() {
               Aktualne dane o salonach i uslugach dostepnych w systemie.
             </p>
             <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-teal-200/70 bg-teal-50/70 px-3 py-1 text-xs font-semibold text-teal-700">
-              Aktualizacja na zywo
+              {isDemoMode ? "Tryb demo" : "Aktualizacja na zywo"}
             </div>
           </div>
         </div>

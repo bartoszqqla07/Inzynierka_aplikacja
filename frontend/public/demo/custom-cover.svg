@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <rect width="1600" height="900" fill="#e2e8f0" />
+  <rect x="120" y="120" width="1360" height="660" rx="40" fill="#ffffff" opacity="0.82" />
+  <text x="190" y="360" font-family="Arial, sans-serif" font-size="96" fill="#0f172a" font-weight="700">Custom Demo Cover</text>
+</svg>

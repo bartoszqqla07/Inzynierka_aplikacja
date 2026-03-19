@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
+import { isDemoMode } from "../config/demoMode";
 import { supabase } from "../lib/supabaseClient";
 import { useAuth } from "../lib/auth";
 
@@ -41,6 +42,7 @@ export default function Navbar() {
   const notificationsRef = useRef(null);
 
   const fetchNotifications = useCallback(async () => {
+    if (isDemoMode) return;
     if (!session?.access_token) return;
     setIsNotificationsLoading(true);
     setNotificationsError("");
@@ -180,6 +182,7 @@ export default function Navbar() {
   };
 
   useEffect(() => {
+    if (isDemoMode) return undefined;
     if (!session?.access_token) {
       setNotifications([]);
       setUnreadCount(0);
@@ -194,11 +197,13 @@ export default function Navbar() {
   }, [session?.access_token, fetchNotifications]);
 
   useEffect(() => {
+    if (isDemoMode) return undefined;
     if (!isNotificationsOpen || !session?.access_token) return;
     fetchNotifications();
   }, [isNotificationsOpen, session?.access_token, fetchNotifications]);
 
   useEffect(() => {
+    if (isDemoMode) return undefined;
     if (!session?.access_token) return undefined;
 
     const streamUrl = `${API}/notifications/stream?token=${encodeURIComponent(session.access_token)}`;
@@ -290,6 +295,11 @@ export default function Navbar() {
           </div>
         ) : null}
       </div>
+      {isDemoMode ? (
+        <span className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-700">
+          DEMO
+        </span>
+      ) : null}
       {session ? (
         <>
           <div className="relative" ref={userMenuRef}>
@@ -334,107 +344,108 @@ export default function Navbar() {
               </div>
             ) : null}
           </div>
-
-          <div className="relative" ref={notificationsRef}>
-            <button
-              type="button"
-              onClick={() => setIsNotificationsOpen((value) => !value)}
-              className="relative rounded-xl border border-slate-200 bg-white/80 p-2 text-slate-700 shadow-sm transition hover:bg-white"
-              aria-expanded={isNotificationsOpen}
-              aria-haspopup="menu"
-              aria-label="Powiadomienia"
-            >
-              <span className="pointer-events-none" aria-hidden="true">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-5 w-5"
-                >
-                  <path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h11z" />
-                  <path d="M9 17a3 3 0 0 0 6 0" />
-                </svg>
-              </span>
-              {unreadCount > 0 ? (
-                <span className="absolute -right-1 -top-1 rounded-full bg-rose-500 px-1.5 py-0.5 text-[11px] font-bold text-white">
-                  {unreadCount > 99 ? "99+" : unreadCount}
-                </span>
-              ) : null}
-            </button>
-            {isNotificationsOpen ? (
-              <div
-                className="absolute right-0 mt-2 w-80 rounded-2xl border border-slate-200 bg-white py-2 shadow-[0_20px_50px_rgba(15,23,42,0.18)]"
-                role="menu"
+          {!isDemoMode && (
+            <div className="relative" ref={notificationsRef}>
+              <button
+                type="button"
+                onClick={() => setIsNotificationsOpen((value) => !value)}
+                className="relative rounded-xl border border-slate-200 bg-white/80 p-2 text-slate-700 shadow-sm transition hover:bg-white"
+                aria-expanded={isNotificationsOpen}
+                aria-haspopup="menu"
+                aria-label="Powiadomienia"
               >
-                <div className="flex items-center justify-between px-4 pb-2">
-                  <div className="text-sm font-semibold text-slate-900">Powiadomienia</div>
-                  <button
-                    type="button"
-                    onClick={markAllNotificationsRead}
-                    className="text-xs font-semibold text-teal-700 transition hover:text-teal-600 disabled:cursor-not-allowed disabled:text-slate-300"
-                    disabled={unreadCount === 0}
+                <span className="pointer-events-none" aria-hidden="true">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-5 w-5"
                   >
-                    Oznacz wszystkie
-                  </button>
-                </div>
-                <div className="my-1 h-px bg-slate-100" />
-                <div className="max-h-80 overflow-auto">
-                  {isNotificationsLoading ? (
-                    <div className="px-4 py-3 text-sm text-slate-500">Ladowanie...</div>
-                  ) : notificationsError ? (
-                    <div className="px-4 py-3 text-sm text-rose-600">{notificationsError}</div>
-                  ) : notifications.length === 0 ? (
-                    <div className="px-4 py-3 text-sm text-slate-500">Brak powiadomien.</div>
-                  ) : (
-                    notifications.map((item) => (
-                      <div
-                        key={item.id}
-                        className={`relative block w-full border-l-4 px-4 py-3 text-left transition hover:bg-slate-50 ${
-                          item.isRead
-                            ? "border-l-transparent bg-white"
-                            : "border-l-teal-500 bg-teal-100/70"
-                        }`}
-                      >
-                        <button
-                          type="button"
-                          onClick={() => deleteNotification(item.id)}
-                          className="absolute right-2 top-2 rounded-full px-1.5 py-0.5 text-xs font-bold text-slate-400 transition hover:bg-slate-200 hover:text-slate-700"
-                          aria-label="Usun powiadomienie"
-                        >
-                          x
-                        </button>
-                        {!item.isRead ? (
-                          <span className="absolute right-10 top-3 rounded-full bg-teal-600 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
-                            Nowe
-                          </span>
-                        ) : null}
-                        <button
-                          type="button"
-                          onClick={() => markNotificationRead(item.id)}
-                          className="block w-full text-left"
-                        >
-                          <div
-                          className={`text-sm text-slate-900 ${
-                            item.isRead ? "font-medium" : "font-bold"
+                    <path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h11z" />
+                    <path d="M9 17a3 3 0 0 0 6 0" />
+                  </svg>
+                </span>
+                {unreadCount > 0 ? (
+                  <span className="absolute -right-1 -top-1 rounded-full bg-rose-500 px-1.5 py-0.5 text-[11px] font-bold text-white">
+                    {unreadCount > 99 ? "99+" : unreadCount}
+                  </span>
+                ) : null}
+              </button>
+              {isNotificationsOpen ? (
+                <div
+                  className="absolute right-0 mt-2 w-80 rounded-2xl border border-slate-200 bg-white py-2 shadow-[0_20px_50px_rgba(15,23,42,0.18)]"
+                  role="menu"
+                >
+                  <div className="flex items-center justify-between px-4 pb-2">
+                    <div className="text-sm font-semibold text-slate-900">Powiadomienia</div>
+                    <button
+                      type="button"
+                      onClick={markAllNotificationsRead}
+                      className="text-xs font-semibold text-teal-700 transition hover:text-teal-600 disabled:cursor-not-allowed disabled:text-slate-300"
+                      disabled={unreadCount === 0}
+                    >
+                      Oznacz wszystkie
+                    </button>
+                  </div>
+                  <div className="my-1 h-px bg-slate-100" />
+                  <div className="max-h-80 overflow-auto">
+                    {isNotificationsLoading ? (
+                      <div className="px-4 py-3 text-sm text-slate-500">Ladowanie...</div>
+                    ) : notificationsError ? (
+                      <div className="px-4 py-3 text-sm text-rose-600">{notificationsError}</div>
+                    ) : notifications.length === 0 ? (
+                      <div className="px-4 py-3 text-sm text-slate-500">Brak powiadomien.</div>
+                    ) : (
+                      notifications.map((item) => (
+                        <div
+                          key={item.id}
+                          className={`relative block w-full border-l-4 px-4 py-3 text-left transition hover:bg-slate-50 ${
+                            item.isRead
+                              ? "border-l-transparent bg-white"
+                              : "border-l-teal-500 bg-teal-100/70"
                           }`}
+                        >
+                          <button
+                            type="button"
+                            onClick={() => deleteNotification(item.id)}
+                            className="absolute right-2 top-2 rounded-full px-1.5 py-0.5 text-xs font-bold text-slate-400 transition hover:bg-slate-200 hover:text-slate-700"
+                            aria-label="Usun powiadomienie"
                           >
-                            {item.title}
-                          </div>
-                          <div className="mt-1 text-xs text-slate-600">{item.message}</div>
-                          <div className="mt-2 text-[11px] text-slate-400">
-                            {formatNotificationDate(item.createdAt)}
-                          </div>
-                        </button>
-                      </div>
-                    ))
-                  )}
+                            x
+                          </button>
+                          {!item.isRead ? (
+                            <span className="absolute right-10 top-3 rounded-full bg-teal-600 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+                              Nowe
+                            </span>
+                          ) : null}
+                          <button
+                            type="button"
+                            onClick={() => markNotificationRead(item.id)}
+                            className="block w-full text-left"
+                          >
+                            <div
+                              className={`text-sm text-slate-900 ${
+                                item.isRead ? "font-medium" : "font-bold"
+                              }`}
+                            >
+                              {item.title}
+                            </div>
+                            <div className="mt-1 text-xs text-slate-600">{item.message}</div>
+                            <div className="mt-2 text-[11px] text-slate-400">
+                              {formatNotificationDate(item.createdAt)}
+                            </div>
+                          </button>
+                        </div>
+                      ))
+                    )}
+                  </div>
                 </div>
-              </div>
-            ) : null}
-          </div>
+              ) : null}
+            </div>
+          )}
         </>
       ) : (
         <NavItem to="/login" label="Zaloguj sie" state={{ from }} />

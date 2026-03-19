@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+  <rect width="1200" height="720" fill="#eff6ff" />
+  <circle cx="230" cy="180" r="120" fill="#bfdbfe" />
+  <circle cx="980" cy="520" r="180" fill="#dbeafe" />
+  <text x="120" y="260" font-family="Arial, sans-serif" font-size="72" fill="#1d4ed8" font-weight="700">Luna Skin Studio</text>
+  <text x="120" y="330" font-family="Arial, sans-serif" font-size="32" fill="#334155">Placeholder dla prezentacji demo</text>
+</svg>

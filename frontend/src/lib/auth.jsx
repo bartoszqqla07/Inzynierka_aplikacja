@@ -1,4 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { isDemoMode } from "../config/demoMode";
+import { buildDemoSession, getDemoUser, subscribeDemoAuth } from "../demo/demoAuth";
 import { supabase } from "./supabaseClient";
 
 const API = "http://localhost:5000";
@@ -15,6 +17,20 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (isDemoMode) {
+      // In demo mode auth is driven entirely by localStorage instead of Supabase.
+      const initialUser = getDemoUser();
+      setSession(buildDemoSession(initialUser));
+      setUser(initialUser);
+      setLoading(false);
+      const unsubscribe = subscribeDemoAuth((nextUser) => {
+        setSession(buildDemoSession(nextUser));
+        setUser(nextUser);
+        setLoading(false);
+      });
+      return unsubscribe;
+    }
+
     let isMounted = true;
 
     supabase.auth.getSession().then(({ data }) => {
@@ -32,6 +48,8 @@ export function AuthProvider({ children }) {
   }, []);
 
   useEffect(() => {
+    if (isDemoMode) return undefined;
+
     let isMounted = true;
 
     async function loadUser() {

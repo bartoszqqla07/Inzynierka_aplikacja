@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { isDemoMode } from "../config/demoMode";
+import { addDemoReview } from "../demo/demoApi";
 
 export default function AddReview() {
   const [rating, setRating] = useState("5");
@@ -29,21 +31,30 @@ export default function AddReview() {
     setIsLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/reviews", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      if (isDemoMode) {
+        await addDemoReview({
           name: name.trim(),
           city: city.trim(),
           rating: Number(rating),
           text: text.trim(),
-        }),
-      });
+        });
+      } else {
+        const res = await fetch("http://localhost:5000/reviews", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: name.trim(),
+            city: city.trim(),
+            rating: Number(rating),
+            text: text.trim(),
+          }),
+        });
 
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        setErrorMsg(data?.error || "Nie udalo sie zapisac opinii.");
-        return;
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          setErrorMsg(data?.error || "Nie udalo sie zapisac opinii.");
+          return;
+        }
       }
 
       setName("");
@@ -52,7 +63,7 @@ export default function AddReview() {
       setRating("5");
       setInfoMsg("Dziekujemy! Opinia zostala dodana.");
     } catch {
-      setErrorMsg("Blad polaczenia z backendem.");
+      setErrorMsg(isDemoMode ? "Nie udalo sie zapisac opinii demo." : "Blad polaczenia z backendem.");
     } finally {
       setIsLoading(false);
     }

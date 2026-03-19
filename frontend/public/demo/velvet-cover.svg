@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <rect width="1600" height="900" fill="#fce7f3" />
+  <rect x="100" y="140" width="1400" height="620" rx="42" fill="#ffffff" opacity="0.76" />
+  <text x="180" y="330" font-family="Arial, sans-serif" font-size="44" fill="#831843">Velvet Cover</text>
+  <text x="180" y="430" font-family="Arial, sans-serif" font-size="94" fill="#be185d" font-weight="700">Hair &amp; Beauty Demo</text>
+</svg>

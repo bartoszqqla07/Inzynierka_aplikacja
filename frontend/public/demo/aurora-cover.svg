@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <rect width="1600" height="900" fill="#fef3c7" />
+  <rect x="110" y="120" width="1380" height="660" rx="36" fill="#ffffff" opacity="0.75" />
+  <text x="180" y="290" font-family="Arial, sans-serif" font-size="42" fill="#92400e">Aurora Cover</text>
+  <text x="180" y="390" font-family="Arial, sans-serif" font-size="98" fill="#0f766e" font-weight="700">Showroom Placeholder</text>
+</svg>

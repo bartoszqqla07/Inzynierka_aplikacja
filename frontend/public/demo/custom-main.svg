@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+  <rect width="1200" height="720" fill="#f8fafc" />
+  <rect x="80" y="80" width="1040" height="560" rx="34" fill="#ffffff" stroke="#cbd5e1" stroke-width="10" />
+  <text x="130" y="250" font-family="Arial, sans-serif" font-size="86" fill="#0f172a" font-weight="700">Nowy salon demo</text>
+  <text x="130" y="330" font-family="Arial, sans-serif" font-size="34" fill="#64748b">Podmien plik w public/demo/custom-main.svg</text>
+</svg>

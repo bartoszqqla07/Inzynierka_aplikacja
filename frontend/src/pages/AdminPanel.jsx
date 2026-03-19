@@ -1,4 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
+import { isDemoMode } from "../config/demoMode";
+import {
+  addDemoSalon,
+  addDemoSalonImage,
+  addDemoService,
+  deleteDemoImage,
+  deleteDemoSalon,
+  deleteDemoService,
+  getDemoAdminSalons,
+  getDemoDashboardStats,
+  getDemoSalonStats,
+  getDemoUsers,
+  setDemoMainImage,
+  updateDemoSalon,
+  updateDemoService,
+} from "../demo/demoApi";
 import { useAuth } from "../lib/auth";
 import ConfirmDialog from "../components/ConfirmDialog";
 
@@ -87,19 +103,25 @@ export default function AdminPanel() {
   const [statsLoading, setStatsLoading] = useState(false);
   const [statsError, setStatsError] = useState("");
   const [isDeleteSalonDialogOpen, setIsDeleteSalonDialogOpen] = useState(false);
+  const [demoSystemStats, setDemoSystemStats] = useState(null);
+  const [demoUsers, setDemoUsers] = useState([]);
 
   async function loadSalons() {
     if (!session) return;
     try {
       setLoading(true);
       setError("");
-      const res = await fetch(`${API}/admin/salons`, {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-      if (!res.ok) throw new Error("Blad pobierania salonow");
-      const data = await res.json();
+      const data = isDemoMode
+        ? await getDemoAdminSalons()
+        : await (async () => {
+            const res = await fetch(`${API}/admin/salons`, {
+              headers: {
+                Authorization: `Bearer ${session.access_token}`,
+              },
+            });
+            if (!res.ok) throw new Error("Blad pobierania salonow");
+            return res.json();
+          })();
       setSalons(data);
       if (!data.length) {
         setSelectedId(null);
@@ -128,6 +150,17 @@ export default function AdminPanel() {
   useEffect(() => {
     loadSalons();
   }, [session]);
+
+  useEffect(() => {
+    if (!session || !isDemoMode) return;
+
+    async function loadDemoAdminData() {
+      setDemoSystemStats(await getDemoDashboardStats());
+      setDemoUsers(await getDemoUsers());
+    }
+
+    loadDemoAdminData();
+  }, [session, loading]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -179,13 +212,17 @@ export default function AdminPanel() {
       try {
         setStatsLoading(true);
         setStatsError("");
-        const res = await fetch(`${API}/admin/salons/${selectedId}/stats?months=${statsMonths}`, {
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
-        });
-        if (!res.ok) throw new Error("Blad pobierania statystyk");
-        const data = await res.json();
+        const data = isDemoMode
+          ? await getDemoSalonStats(selectedId, statsMonths)
+          : await (async () => {
+              const res = await fetch(`${API}/admin/salons/${selectedId}/stats?months=${statsMonths}`, {
+                headers: {
+                  Authorization: `Bearer ${session.access_token}`,
+                },
+              });
+              if (!res.ok) throw new Error("Blad pobierania statystyk");
+              return res.json();
+            })();
         if (isMounted) setSalonStats(data);
       } catch {
         if (isMounted) {
@@ -218,15 +255,19 @@ export default function AdminPanel() {
         hours: toHoursPayload(form.hours),
       };
 
-      const res = await fetch(`${API}/admin/salons/${selectedId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error("Update failed");
+      if (isDemoMode) {
+        await updateDemoSalon(selectedId, payload);
+      } else {
+        const res = await fetch(`${API}/admin/salons/${selectedId}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error("Update failed");
+      }
       setStatusMsg("Zapisano zmiany salonu.");
       await loadSalons();
     } catch {
@@ -251,19 +292,23 @@ export default function AdminPanel() {
         setStatusMsg("Uzupelnij nazwe i miasto nowego salonu.");
         return;
       }
-      const res = await fetch(`${API}/admin/salons`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) {
-        const details = await res.json().catch(() => ({}));
-        throw new Error(details?.error || "Blad tworzenia salonu");
-      }
-      const createdSalon = await res.json();
+      const createdSalon = isDemoMode
+        ? await addDemoSalon(payload)
+        : await (async () => {
+            const res = await fetch(`${API}/admin/salons`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session.access_token}`,
+              },
+              body: JSON.stringify(payload),
+            });
+            if (!res.ok) {
+              const details = await res.json().catch(() => ({}));
+              throw new Error(details?.error || "Blad tworzenia salonu");
+            }
+            return res.json();
+          })();
       setNewSalon({
         name: "",
         city: "",
@@ -289,15 +334,19 @@ export default function AdminPanel() {
 
     setStatusMsg("");
     try {
-      const res = await fetch(`${API}/admin/salons/${selectedId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-      if (!res.ok) {
-        const details = await res.json().catch(() => ({}));
-        throw new Error(details?.error || "Blad usuwania salonu");
+      if (isDemoMode) {
+        await deleteDemoSalon(selectedId);
+      } else {
+        const res = await fetch(`${API}/admin/salons/${selectedId}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
+        if (!res.ok) {
+          const details = await res.json().catch(() => ({}));
+          throw new Error(details?.error || "Blad usuwania salonu");
+        }
       }
       setSelectedId(null);
       await loadSalons();
@@ -311,15 +360,19 @@ export default function AdminPanel() {
     if (!selectedId || !session || !url) return;
     setStatusMsg("");
     try {
-      const res = await fetch(`${API}/admin/salons/${selectedId}/images`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({ url, setAsMain: newImageMain }),
-      });
-      if (!res.ok) throw new Error("Add image failed");
+      if (isDemoMode) {
+        await addDemoSalonImage(selectedId, url, newImageMain);
+      } else {
+        const res = await fetch(`${API}/admin/salons/${selectedId}/images`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ url, setAsMain: newImageMain }),
+        });
+        if (!res.ok) throw new Error("Add image failed");
+      }
       setNewImageFile(null);
       setNewImageMain(false);
       await loadSalons();
@@ -404,13 +457,17 @@ export default function AdminPanel() {
     if (!session) return;
     setStatusMsg("");
     try {
-      const res = await fetch(`${API}/admin/images/${imageId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-      if (!res.ok) throw new Error("Delete image failed");
+      if (isDemoMode) {
+        await deleteDemoImage(imageId);
+      } else {
+        const res = await fetch(`${API}/admin/images/${imageId}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
+        if (!res.ok) throw new Error("Delete image failed");
+      }
       await loadSalons();
     } catch {
       setStatusMsg("Blad usuwania zdjecia.");
@@ -421,15 +478,19 @@ export default function AdminPanel() {
     if (!session || !selectedId) return;
     setStatusMsg("");
     try {
-      const res = await fetch(`${API}/admin/salons/${selectedId}/main-image`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({ imageId }),
-      });
-      if (!res.ok) throw new Error("Main image update failed");
+      if (isDemoMode) {
+        await setDemoMainImage(selectedId, imageId);
+      } else {
+        const res = await fetch(`${API}/admin/salons/${selectedId}/main-image`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ imageId }),
+        });
+        if (!res.ok) throw new Error("Main image update failed");
+      }
       await loadSalons();
     } catch {
       setStatusMsg("Blad ustawiania zdjecia glownego.");
@@ -449,15 +510,19 @@ export default function AdminPanel() {
         setStatusMsg("Uzupelnij dane nowej uslugi.");
         return;
       }
-      const res = await fetch(`${API}/admin/salons/${selectedId}/services`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error("Add service failed");
+      if (isDemoMode) {
+        await addDemoService(selectedId, payload);
+      } else {
+        const res = await fetch(`${API}/admin/salons/${selectedId}/services`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error("Add service failed");
+      }
       setNewService({ name: "", duration: "", price: "" });
       await loadSalons();
     } catch {
@@ -476,15 +541,19 @@ export default function AdminPanel() {
         duration: Number(draft.duration),
         price: Number(draft.price),
       };
-      const res = await fetch(`${API}/admin/services/${serviceId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error("Update service failed");
+      if (isDemoMode) {
+        await updateDemoService(serviceId, payload);
+      } else {
+        const res = await fetch(`${API}/admin/services/${serviceId}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error("Update service failed");
+      }
       await loadSalons();
     } catch {
       setStatusMsg("Blad zapisu uslugi.");
@@ -495,13 +564,17 @@ export default function AdminPanel() {
     if (!session) return;
     setStatusMsg("");
     try {
-      const res = await fetch(`${API}/admin/services/${serviceId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-      if (!res.ok) throw new Error("Delete service failed");
+      if (isDemoMode) {
+        await deleteDemoService(serviceId);
+      } else {
+        const res = await fetch(`${API}/admin/services/${serviceId}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
+        if (!res.ok) throw new Error("Delete service failed");
+      }
       await loadSalons();
     } catch {
       setStatusMsg("Blad usuwania uslugi.");
@@ -573,6 +646,78 @@ export default function AdminPanel() {
           <div className="rounded-2xl border border-slate-200/60 bg-white/70 p-3 text-xs text-slate-600 shadow-sm">
             {statusMsg}
           </div>
+        )}
+        {isDemoMode && demoSystemStats && (
+          <>
+            <div className="rounded-2xl border border-amber-200/70 bg-amber-50/70 p-5 shadow-sm">
+              <div className="text-xs uppercase tracking-wide text-amber-700">Panel admina demo</div>
+              <h2 className="mt-1 text-xl font-semibold text-slate-900">Statystyki systemu</h2>
+              <div className="mt-4 grid gap-3 md:grid-cols-5">
+                {[
+                  { label: "Salony", value: demoSystemStats.totalSalons },
+                  { label: "Uzytkownicy", value: demoSystemStats.totalUsers },
+                  { label: "Rezerwacje", value: demoSystemStats.totalBookings },
+                  { label: "Opinie", value: demoSystemStats.totalReviews },
+                  { label: "Przychod", value: `${demoSystemStats.totalRevenue} zl` },
+                ].map((item) => (
+                  <div key={item.label} className="rounded-xl border border-amber-200 bg-white/80 p-3">
+                    <div className="text-xs text-slate-500">{item.label}</div>
+                    <div className="mt-1 text-2xl font-semibold text-slate-900">{item.value}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                <div className="rounded-xl border border-slate-200 bg-white/80 p-4">
+                  <div className="text-xs uppercase tracking-wide text-slate-400">Role</div>
+                  <div className="mt-3 grid gap-2">
+                    {demoSystemStats.usersByRole.map((item) => (
+                      <div
+                        key={item.role}
+                        className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+                      >
+                        <span>{item.role}</span>
+                        <span className="font-semibold text-slate-900">{item.count}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="rounded-xl border border-slate-200 bg-white/80 p-4">
+                  <div className="text-xs uppercase tracking-wide text-slate-400">Miasta</div>
+                  <div className="mt-3 grid gap-2">
+                    {demoSystemStats.salonsByCity.map((item) => (
+                      <div
+                        key={item.city}
+                        className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+                      >
+                        <span>{item.city}</span>
+                        <span className="font-semibold text-slate-900">{item.count}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-slate-200/60 bg-white/70 p-5 shadow-sm">
+              <div className="text-xs uppercase tracking-wide text-slate-400">Uzytkownicy demo</div>
+              <h2 className="mt-1 text-xl font-semibold text-slate-900">Lista kont</h2>
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                {demoUsers.map((demoUser) => (
+                  <div
+                    key={demoUser.id}
+                    className="rounded-xl border border-slate-200 bg-white/80 p-4 text-sm text-slate-700"
+                  >
+                    <div className="font-semibold text-slate-900">{demoUser.fullName}</div>
+                    <div className="mt-1">{demoUser.email}</div>
+                    <div className="mt-1 text-slate-500">{demoUser.city}</div>
+                    <div className="mt-3 inline-flex rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-700">
+                      {demoUser.role}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
         )}
         {isCreateMode && (
         <div className="rounded-2xl border border-slate-200/60 bg-white/70 p-5 shadow-sm">
