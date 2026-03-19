@@ -182,6 +182,47 @@ export async function getDemoDashboardStats() {
   return buildSystemStats(getDemoState());
 }
 
+export async function getDemoNotifications(userId, limit = 20) {
+  await delay();
+  const state = getDemoState();
+  const items = state.notifications
+    .filter((item) => item.userId === Number(userId))
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, limit);
+  const unreadCount = items.filter((item) => !item.isRead).length;
+  return { items, unreadCount };
+}
+
+export async function markDemoNotificationRead(notificationId) {
+  await delay();
+  const nextState = updateDemoState((state) => {
+    const item = state.notifications.find((entry) => entry.id === Number(notificationId));
+    if (item) item.isRead = true;
+    return state;
+  });
+  return nextState.notifications.find((entry) => entry.id === Number(notificationId)) || null;
+}
+
+export async function markAllDemoNotificationsRead(userId) {
+  await delay();
+  updateDemoState((state) => {
+    state.notifications.forEach((item) => {
+      if (item.userId === Number(userId)) item.isRead = true;
+    });
+    return state;
+  });
+  return true;
+}
+
+export async function deleteDemoNotification(notificationId) {
+  await delay();
+  updateDemoState((state) => {
+    state.notifications = state.notifications.filter((item) => item.id !== Number(notificationId));
+    return state;
+  });
+  return true;
+}
+
 export async function getDemoUsers() {
   await delay();
   return getDemoState().users.map((user) => sanitizeDemoUser(user));

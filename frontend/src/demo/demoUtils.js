@@ -1,4 +1,4 @@
-import { demoBookings, demoReviews, demoSalons, demoUsers } from "./demoData";
+import { demoBookings, demoNotifications, demoReviews, demoSalons, demoUsers } from "./demoData";
 
 const DEMO_STATE_KEY = "bookme.demo.state";
 const DEMO_STATE_EVENT = "bookme:demo-state-changed";
@@ -17,17 +17,20 @@ function buildInitialState() {
   const salons = deepClone(demoSalons);
   const bookings = deepClone(demoBookings);
   const reviews = deepClone(demoReviews);
+  const notifications = deepClone(demoNotifications);
   const users = deepClone(demoUsers);
   return {
     salons,
     bookings,
     reviews,
+    notifications,
     users,
     counters: {
       salon: Math.max(...salons.map((item) => item.id), 100) + 1,
       service: Math.max(...salons.flatMap((item) => item.services.map((service) => service.id)), 200) + 1,
       image: Math.max(...salons.flatMap((item) => item.images.map((image) => image.id)), 1000) + 1,
       booking: Math.max(...bookings.map((item) => item.id), 400) + 1,
+      notification: Math.max(...notifications.map((item) => item.id), 500) + 1,
       review: Math.max(...reviews.map((item) => item.id), 300) + 1,
     },
   };

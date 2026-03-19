@@ -348,3 +348,46 @@ export const demoBookings = [
     dateTime: createRelativeDate(-32, "15:00"),
   },
 ];
+
+export const demoNotifications = [
+  {
+    id: 501,
+    userId: 1,
+    title: "Potwierdzenie rezerwacji",
+    message: "Twoja wizyta w Aurora Beauty Lounge na jutro o 10:00 jest potwierdzona.",
+    createdAt: createRelativeDate(-1, "18:00"),
+    isRead: false,
+  },
+  {
+    id: 502,
+    userId: 2,
+    title: "Nowa rezerwacja klientki",
+    message: "Anna Kowalska zarezerwowala manicure hybrydowy w Aurora Beauty Lounge.",
+    createdAt: createRelativeDate(0, "08:15"),
+    isRead: false,
+  },
+  {
+    id: 503,
+    userId: 2,
+    title: "Zmiana terminu wizyty",
+    message: "Monika Dabrowska przeniosla laminacje brwi na pojutrze, godz. 14:00.",
+    createdAt: createRelativeDate(0, "09:10"),
+    isRead: true,
+  },
+  {
+    id: 504,
+    userId: 3,
+    title: "Nowy salon w systemie demo",
+    message: "Velvet Hair & Beauty zostal dodany do listy aktywnych salonow.",
+    createdAt: createRelativeDate(-2, "12:20"),
+    isRead: false,
+  },
+  {
+    id: 505,
+    userId: 3,
+    title: "Nowa opinia klientki",
+    message: "Dodano nowa opinie 5/5 dla Luna Skin Studio.",
+    createdAt: createRelativeDate(-1, "15:40"),
+    isRead: true,
+  },
+];
