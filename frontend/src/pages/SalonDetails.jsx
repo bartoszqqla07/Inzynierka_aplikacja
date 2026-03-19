@@ -218,12 +218,6 @@ export default function SalonDetails() {
                     <div className="mt-2 rounded-full border border-teal-200/80 bg-teal-50 px-2 py-0.5 text-xs font-semibold text-teal-700">
                       {srv.duration} min - {srv.price} zl
                     </div>
-                    <div className="mt-3 text-xs text-slate-500">
-                      {srv.category || "Usluga"}
-                    </div>
-                    {srv.description ? (
-                      <p className="mt-2 text-sm text-slate-600">{srv.description}</p>
-                    ) : null}
                   </div>
                   <div className="mt-4 flex justify-center gap-2">
                     <button
@@ -246,30 +240,6 @@ export default function SalonDetails() {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="rounded-3xl border border-slate-200/70 bg-white/60 p-5 shadow-sm backdrop-blur [box-shadow:inset_0_1px_0_rgba(255,255,255,0.7)] sm:p-6">
-        <div className="text-center">
-          <h2 className="text-2xl font-semibold text-slate-900">Cennik</h2>
-          <p className="mt-2 text-sm text-slate-600">Czytelny przeglad uslug i cen.</p>
-        </div>
-        <div className="mt-4 grid gap-3">
-          {salon.services.map((service) => (
-            <div
-              key={`price-${service.id}`}
-              className="grid gap-2 rounded-2xl border border-slate-200/70 bg-white/80 p-4 shadow-sm sm:grid-cols-[1fr_auto_auto]"
-            >
-              <div>
-                <div className="font-semibold text-slate-900">{service.name}</div>
-                <div className="text-sm text-slate-500">
-                  {service.category || "Usluga"}{service.description ? ` - ${service.description}` : ""}
-                </div>
-              </div>
-              <div className="text-sm font-semibold text-slate-700">{service.duration} min</div>
-              <div className="text-base font-semibold text-slate-900">{service.price} zl</div>
-            </div>
-          ))}
         </div>
       </section>
     </div>
