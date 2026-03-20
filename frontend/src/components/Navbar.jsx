@@ -44,7 +44,8 @@ export default function Navbar() {
   const [isNotificationsLoading, setIsNotificationsLoading] = useState(false);
   const [notificationsError, setNotificationsError] = useState("");
   const userMenuRef = useRef(null);
-  const mainMenuRef = useRef(null);
+  const mobileMenuRef = useRef(null);
+  const desktopMenuRef = useRef(null);
   const notificationsRef = useRef(null);
 
   const fetchNotifications = useCallback(async () => {
@@ -187,8 +188,14 @@ export default function Navbar() {
   useEffect(() => {
     function handleOutsideClick(event) {
       if (
-        mainMenuRef.current &&
-        !mainMenuRef.current.contains(event.target)
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(event.target)
+      ) {
+        setIsMenuOpen(false);
+      }
+      if (
+        desktopMenuRef.current &&
+        !desktopMenuRef.current.contains(event.target)
       ) {
         setIsMenuOpen(false);
       }
@@ -267,7 +274,7 @@ export default function Navbar() {
 
   return (
     <nav className="flex w-full items-center justify-end gap-2 lg:w-auto">
-      <div className="relative lg:hidden" ref={mainMenuRef}>
+      <div className="relative lg:hidden" ref={mobileMenuRef}>
         <button
           type="button"
           onClick={() => {
@@ -476,7 +483,7 @@ export default function Navbar() {
       </div>
 
       <div className="hidden items-center gap-2 lg:flex">
-        <div className="relative" ref={mainMenuRef}>
+        <div className="relative" ref={desktopMenuRef}>
           <button
             type="button"
             onClick={() => setIsMenuOpen((value) => !value)}

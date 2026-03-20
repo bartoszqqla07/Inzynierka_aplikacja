@@ -43,8 +43,8 @@ export default function App() {
         <>
           <header className="sticky top-0 z-20">
             <div className="mx-auto w-full max-w-6xl px-3 pt-3 sm:px-4 sm:pt-4">
-              <div className="flex flex-col gap-3 rounded-2xl border border-slate-200/60 bg-white/60 px-3 py-3 shadow-sm backdrop-blur sm:gap-4 sm:rounded-3xl sm:px-5 sm:py-4 lg:flex-row lg:items-center lg:justify-between">
-                <Link to="/" className="flex min-w-0 items-center gap-3">
+              <div className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200/60 bg-white/60 px-3 py-3 shadow-sm backdrop-blur sm:rounded-3xl sm:px-5 sm:py-4">
+                <Link to="/" className="flex min-w-0 flex-1 items-center gap-3">
                   <img
                     src={bookmeLogo}
                     alt="BookME logo"
