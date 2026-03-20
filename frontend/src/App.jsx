@@ -50,7 +50,7 @@ export default function App() {
                     alt="BookME logo"
                     className="h-12 w-12 rounded-2xl object-contain shadow-sm sm:h-14 sm:w-14"
                   />
-                  <div className="min-w-0 text-sm font-semibold leading-tight text-slate-900 sm:text-lg">
+                  <div className="min-w-0 truncate whitespace-nowrap text-[13px] font-semibold leading-tight text-slate-900 sm:text-lg">
                     BookME - System rezerwacji wizyt
                   </div>
                 </Link>

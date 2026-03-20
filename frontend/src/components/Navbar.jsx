@@ -309,176 +309,191 @@ export default function Navbar() {
         </button>
 
         {isMenuOpen ? (
-          <div
-            className="absolute right-0 z-30 mt-2 w-[min(19rem,calc(100vw-1.5rem))] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_20px_50px_rgba(15,23,42,0.18)]"
-            role="menu"
-          >
-            <div className="max-h-[75vh] overflow-y-auto p-2">
-              {isDemoMode ? (
-                <div className="mb-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-semibold text-amber-700">
-                  Tryb DEMO
-                </div>
-              ) : null}
-
-              {session ? (
-                <>
-                  <div className="rounded-xl bg-slate-50 px-3 py-3">
-                    <div className="text-[11px] uppercase tracking-wide text-slate-400">
-                      Konto
-                    </div>
-                    <div className="mt-1 break-all text-sm font-semibold text-slate-900">
-                      {userLabel}
-                    </div>
+          <>
+            <button
+              type="button"
+              aria-label="Zamknij menu"
+              className="fixed inset-0 z-30 bg-slate-900/25 backdrop-blur-[1px]"
+              onClick={closeAllMenus}
+            />
+            <div
+              className="fixed right-3 top-[4.5rem] z-40 w-[min(20rem,calc(100vw-1.5rem))] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_20px_50px_rgba(15,23,42,0.18)]"
+              role="menu"
+            >
+              <div className="max-h-[75vh] overflow-y-auto p-2">
+                {isDemoMode ? (
+                  <div className="mb-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-semibold text-amber-700">
+                    Tryb DEMO
                   </div>
+                ) : null}
 
-                  <div className="mt-2 overflow-hidden rounded-xl border border-slate-200">
-                    <button
-                      type="button"
-                      onClick={() => setIsNotificationsOpen((value) => !value)}
-                      className="flex w-full items-center justify-between px-3 py-3 text-left text-sm font-semibold text-slate-800"
-                    >
-                      <span>Powiadomienia</span>
-                      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">
-                        {unreadCount}
-                      </span>
-                    </button>
-
-                    {isNotificationsOpen ? (
-                      <div className="border-t border-slate-200 bg-slate-50">
-                        <div className="flex items-center justify-between px-3 py-2">
-                          <div className="text-xs font-semibold text-slate-500">
-                            Ostatnie
-                          </div>
-                          <button
-                            type="button"
-                            onClick={markAllNotificationsRead}
-                            className="text-[11px] font-semibold text-teal-700 disabled:text-slate-300"
-                            disabled={unreadCount === 0}
-                          >
-                            Oznacz wszystkie
-                          </button>
-                        </div>
-                        <div className="max-h-64 overflow-y-auto">
-                          {isNotificationsLoading ? (
-                            <div className="px-3 py-3 text-sm text-slate-500">Ladowanie...</div>
-                          ) : notificationsError ? (
-                            <div className="px-3 py-3 text-sm text-rose-600">{notificationsError}</div>
-                          ) : notifications.length === 0 ? (
-                            <div className="px-3 py-3 text-sm text-slate-500">Brak powiadomien.</div>
-                          ) : (
-                            notifications.map((item) => (
-                              <div
-                                key={item.id}
-                                className={`border-t border-slate-200 px-3 py-3 ${
-                                  item.isRead ? "bg-white" : "bg-teal-50/70"
-                                }`}
-                              >
-                                <div className="flex items-start justify-between gap-3">
-                                  <button
-                                    type="button"
-                                    onClick={() => markNotificationRead(item.id)}
-                                    className="min-w-0 flex-1 text-left"
-                                  >
-                                    <div className={`text-sm text-slate-900 ${item.isRead ? "font-medium" : "font-bold"}`}>
-                                      {item.title}
-                                    </div>
-                                    <div className="mt-1 text-xs text-slate-600">{item.message}</div>
-                                    <div className="mt-2 text-[11px] text-slate-400">
-                                      {formatNotificationDate(item.createdAt)}
-                                    </div>
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => deleteNotification(item.id)}
-                                    className="shrink-0 rounded-full px-1.5 py-0.5 text-xs font-bold text-slate-400 hover:bg-slate-200 hover:text-slate-700"
-                                    aria-label="Usun powiadomienie"
-                                  >
-                                    x
-                                  </button>
-                                </div>
-                              </div>
-                            ))
-                          )}
-                        </div>
+                {session ? (
+                  <>
+                    <div className="rounded-xl bg-slate-50 px-3 py-3">
+                      <div className="text-[11px] uppercase tracking-wide text-slate-400">
+                        Konto
                       </div>
-                    ) : null}
-                  </div>
+                      <div className="mt-1 break-all text-sm font-semibold text-slate-900">
+                        {userLabel}
+                      </div>
+                    </div>
 
-                  <div className="mt-2 grid gap-1">
-                    <Link
-                      to="/my-bookings"
-                      className="rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                      onClick={closeAllMenus}
-                    >
-                      Moje rezerwacje
-                    </Link>
-                    <Link
-                      to="/add-review"
-                      className="rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                      onClick={closeAllMenus}
-                    >
-                      Dodaj opinie
-                    </Link>
-                    {isAdmin ? (
-                      <>
-                        <Link
-                          to="/schedule"
-                          className="rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                          onClick={closeAllMenus}
-                        >
-                          Terminarz
-                        </Link>
-                        <Link
-                          to="/admin"
-                          className="rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                          onClick={closeAllMenus}
-                        >
-                          Panel admina
-                        </Link>
-                      </>
-                    ) : null}
-                    {isOwner && !isAdmin ? (
-                      <>
-                        <Link
-                          to="/schedule"
-                          className="rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                          onClick={closeAllMenus}
-                        >
-                          Terminarz
-                        </Link>
-                        <Link
-                          to="/owner"
-                          className="rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                          onClick={closeAllMenus}
-                        >
-                          Panel wlasciciela
-                        </Link>
-                      </>
-                    ) : null}
-                  </div>
+                    <div className="mt-2 overflow-hidden rounded-xl border border-slate-200">
+                      <button
+                        type="button"
+                        onClick={() => setIsNotificationsOpen((value) => !value)}
+                        className="flex w-full items-center justify-between px-3 py-3 text-left text-sm font-semibold text-slate-800"
+                      >
+                        <span>Powiadomienia</span>
+                        <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">
+                          {unreadCount}
+                        </span>
+                      </button>
 
-                  <div className="mt-2 border-t border-slate-200 pt-2">
-                    <button
-                      type="button"
-                      onClick={handleLogout}
-                      className="w-full rounded-xl px-3 py-3 text-left text-sm font-semibold text-rose-600 transition hover:bg-rose-50"
-                    >
-                      Wyloguj
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <Link
-                  to="/login"
-                  state={{ from }}
-                  className="block rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                  onClick={closeAllMenus}
-                >
-                  Zaloguj sie
-                </Link>
-              )}
+                      {isNotificationsOpen ? (
+                        <div className="border-t border-slate-200 bg-slate-50">
+                          <div className="flex items-center justify-between px-3 py-2">
+                            <div className="text-xs font-semibold text-slate-500">
+                              Ostatnie
+                            </div>
+                            <button
+                              type="button"
+                              onClick={markAllNotificationsRead}
+                              className="text-[11px] font-semibold text-teal-700 disabled:text-slate-300"
+                              disabled={unreadCount === 0}
+                            >
+                              Oznacz wszystkie
+                            </button>
+                          </div>
+                          <div className="max-h-64 overflow-y-auto">
+                            {isNotificationsLoading ? (
+                              <div className="px-3 py-3 text-sm text-slate-500">Ladowanie...</div>
+                            ) : notificationsError ? (
+                              <div className="px-3 py-3 text-sm text-rose-600">{notificationsError}</div>
+                            ) : notifications.length === 0 ? (
+                              <div className="px-3 py-3 text-sm text-slate-500">Brak powiadomien.</div>
+                            ) : (
+                              notifications.map((item) => (
+                                <div
+                                  key={item.id}
+                                  className={`border-t border-slate-200 px-3 py-3 ${
+                                    item.isRead ? "bg-white" : "bg-teal-50/70"
+                                  }`}
+                                >
+                                  <div className="flex items-start justify-between gap-3">
+                                    <button
+                                      type="button"
+                                      onClick={() => markNotificationRead(item.id)}
+                                      className="min-w-0 flex-1 text-left"
+                                    >
+                                      <div
+                                        className={`text-sm text-slate-900 ${
+                                          item.isRead ? "font-medium" : "font-bold"
+                                        }`}
+                                      >
+                                        {item.title}
+                                      </div>
+                                      <div className="mt-1 text-xs text-slate-600">{item.message}</div>
+                                      <div className="mt-2 text-[11px] text-slate-400">
+                                        {formatNotificationDate(item.createdAt)}
+                                      </div>
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => deleteNotification(item.id)}
+                                      className="shrink-0 rounded-full px-1.5 py-0.5 text-xs font-bold text-slate-400 hover:bg-slate-200 hover:text-slate-700"
+                                      aria-label="Usun powiadomienie"
+                                    >
+                                      x
+                                    </button>
+                                  </div>
+                                </div>
+                              ))
+                            )}
+                          </div>
+                        </div>
+                      ) : null}
+                    </div>
+
+                    <div className="mt-2 grid gap-1">
+                      <Link
+                        to="/my-bookings"
+                        className="rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                        onClick={closeAllMenus}
+                      >
+                        Moje rezerwacje
+                      </Link>
+                      <Link
+                        to="/add-review"
+                        className="rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                        onClick={closeAllMenus}
+                      >
+                        Dodaj opinie
+                      </Link>
+                      {isAdmin ? (
+                        <>
+                          <Link
+                            to="/schedule"
+                            className="rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                            onClick={closeAllMenus}
+                          >
+                            Terminarz
+                          </Link>
+                          <Link
+                            to="/admin"
+                            className="rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                            onClick={closeAllMenus}
+                          >
+                            Panel admina
+                          </Link>
+                        </>
+                      ) : null}
+                      {isOwner && !isAdmin ? (
+                        <>
+                          <Link
+                            to="/schedule"
+                            className="rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                            onClick={closeAllMenus}
+                          >
+                            Terminarz
+                          </Link>
+                          <Link
+                            to="/owner"
+                            className="rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                            onClick={closeAllMenus}
+                          >
+                            Panel wlasciciela
+                          </Link>
+                        </>
+                      ) : null}
+                    </div>
+
+                    <div className="mt-2 border-t border-slate-200 pt-2">
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          closeAllMenus();
+                          await handleLogout();
+                        }}
+                        className="w-full rounded-xl px-3 py-3 text-left text-sm font-semibold text-rose-600 transition hover:bg-rose-50"
+                      >
+                        Wyloguj
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <Link
+                    to="/login"
+                    state={{ from }}
+                    className="block rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                    onClick={closeAllMenus}
+                  >
+                    Zaloguj sie
+                  </Link>
+                )}
+              </div>
             </div>
-          </div>
+          </>
         ) : null}
       </div>
 
