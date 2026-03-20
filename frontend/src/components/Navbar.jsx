@@ -186,40 +186,6 @@ export default function Navbar() {
     });
   }
 
-  useEffect(() => {
-    function handleOutsideClick(event) {
-      if (
-        mobileMenuRef.current &&
-        !mobileMenuRef.current.contains(event.target)
-      ) {
-        setIsMenuOpen(false);
-      }
-      if (
-        desktopMenuRef.current &&
-        !desktopMenuRef.current.contains(event.target)
-      ) {
-        setIsMenuOpen(false);
-      }
-      if (
-        userMenuRef.current &&
-        !userMenuRef.current.contains(event.target)
-      ) {
-        setIsOpen(false);
-      }
-      if (
-        notificationsRef.current &&
-        !notificationsRef.current.contains(event.target)
-      ) {
-        setIsNotificationsOpen(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    };
-  }, []);
-
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setIsOpen(false);
@@ -263,6 +229,10 @@ export default function Navbar() {
       source.close();
     };
   }, [session?.access_token, fetchNotifications]);
+
+  useEffect(() => {
+    closeAllMenus();
+  }, [location.pathname, location.search]);
 
   const userLabel = session?.user?.email || "Uzytkownik";
   const isAdmin = user?.role === "ADMIN";
@@ -517,54 +487,54 @@ export default function Navbar() {
               className="absolute right-0 z-30 mt-2 w-[min(14rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-slate-200 bg-white py-2 shadow-[0_20px_50px_rgba(15,23,42,0.18)]"
               role="menu"
             >
-              <Link
-                to="/add-review"
-                className="block px-4 py-2 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+              <button
+                type="button"
+                className="block w-full px-4 py-2 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                 role="menuitem"
-                onClick={() => setIsMenuOpen(false)}
+                onClick={() => handleMobileNavigate("/add-review")}
               >
                 Dodaj opinie
-              </Link>
+              </button>
               {isAdmin && (
                 <>
                   <div className="my-1 h-px bg-slate-100" />
-                  <Link
-                    to="/schedule"
-                    className="block px-4 py-2 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                  <button
+                    type="button"
+                    className="block w-full px-4 py-2 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                     role="menuitem"
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={() => handleMobileNavigate("/schedule")}
                   >
                     Terminarz
-                  </Link>
-                  <Link
-                    to="/admin"
-                    className="block px-4 py-2 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                  </button>
+                  <button
+                    type="button"
+                    className="block w-full px-4 py-2 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                     role="menuitem"
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={() => handleMobileNavigate("/admin")}
                   >
                     Panel admina
-                  </Link>
+                  </button>
                 </>
               )}
               {isOwner && !isAdmin && (
                 <>
                   <div className="my-1 h-px bg-slate-100" />
-                  <Link
-                    to="/schedule"
-                    className="block px-4 py-2 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                  <button
+                    type="button"
+                    className="block w-full px-4 py-2 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                     role="menuitem"
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={() => handleMobileNavigate("/schedule")}
                   >
                     Terminarz
-                  </Link>
-                  <Link
-                    to="/owner"
-                    className="block px-4 py-2 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                  </button>
+                  <button
+                    type="button"
+                    className="block w-full px-4 py-2 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                     role="menuitem"
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={() => handleMobileNavigate("/owner")}
                   >
                     Panel wlasciciela
-                  </Link>
+                  </button>
                 </>
               )}
             </div>
