@@ -39,6 +39,7 @@ export default function Navbar() {
   const { session, user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDesktopMenuOpen, setIsDesktopMenuOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -239,6 +240,7 @@ export default function Navbar() {
   const isOwner = user?.role === "OWNER" || user?.role === "ADMIN";
   const closeAllMenus = () => {
     setIsMenuOpen(false);
+    setIsDesktopMenuOpen(false);
     setIsOpen(false);
     setIsNotificationsOpen(false);
   };
@@ -254,6 +256,7 @@ export default function Navbar() {
           type="button"
           onClick={() => {
             setIsMenuOpen((value) => !value);
+            setIsDesktopMenuOpen(false);
             setIsOpen(false);
             setIsNotificationsOpen(false);
           }}
@@ -475,17 +478,23 @@ export default function Navbar() {
         <div className="relative" ref={desktopMenuRef}>
           <button
             type="button"
-            onClick={() => setIsMenuOpen((value) => !value)}
+            onClick={() => {
+              setIsDesktopMenuOpen((value) => !value);
+              setIsMenuOpen(false);
+              setIsOpen(false);
+              setIsNotificationsOpen(false);
+            }}
             className="rounded-xl border border-slate-200 bg-white/80 px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-white sm:text-sm"
-            aria-expanded={isMenuOpen}
+            aria-expanded={isDesktopMenuOpen}
             aria-haspopup="menu"
           >
             Menu
           </button>
-          {isMenuOpen ? (
+          {isDesktopMenuOpen ? (
             <div
-              className="absolute right-0 z-30 mt-2 w-[min(14rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-slate-200 bg-white py-2 shadow-[0_20px_50px_rgba(15,23,42,0.18)]"
+              className="absolute right-0 z-[70] mt-2 w-[15rem] overflow-hidden rounded-2xl border border-slate-200 bg-white py-2 shadow-[0_20px_50px_rgba(15,23,42,0.18)]"
               role="menu"
+              onClick={(event) => event.stopPropagation()}
             >
               <button
                 type="button"
