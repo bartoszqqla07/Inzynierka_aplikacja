@@ -41,16 +41,16 @@ export default function App() {
         </Routes>
       ) : (
         <>
-          <header className="sticky top-0 z-10">
-            <div className="mx-auto w-full max-w-6xl px-4 pt-4">
-              <div className="flex flex-col gap-4 rounded-3xl border border-slate-200/60 bg-white/60 px-4 py-4 shadow-sm backdrop-blur sm:px-5 lg:flex-row lg:items-center lg:justify-between">
+          <header className="sticky top-0 z-20">
+            <div className="mx-auto w-full max-w-6xl px-3 pt-3 sm:px-4 sm:pt-4">
+              <div className="flex flex-col gap-3 rounded-2xl border border-slate-200/60 bg-white/60 px-3 py-3 shadow-sm backdrop-blur sm:gap-4 sm:rounded-3xl sm:px-5 sm:py-4 lg:flex-row lg:items-center lg:justify-between">
                 <Link to="/" className="flex min-w-0 items-center gap-3">
                   <img
                     src={bookmeLogo}
                     alt="BookME logo"
                     className="h-12 w-12 rounded-2xl object-contain shadow-sm sm:h-14 sm:w-14"
                   />
-                  <div className="min-w-0 text-base font-semibold leading-tight text-slate-900 sm:text-lg">
+                  <div className="min-w-0 text-sm font-semibold leading-tight text-slate-900 sm:text-lg">
                     BookME - System rezerwacji wizyt
                   </div>
                 </Link>
@@ -60,8 +60,8 @@ export default function App() {
             </div>
           </header>
 
-          <main className="mx-auto w-full max-w-6xl px-4 py-8">
-            <div className="rounded-3xl border border-slate-200/60 bg-white/60 p-4 shadow-[0_18px_60px_rgba(15,23,42,0.18)] backdrop-blur sm:p-6">
+          <main className="mx-auto w-full max-w-6xl px-3 py-5 sm:px-4 sm:py-8">
+            <div className="overflow-hidden rounded-2xl border border-slate-200/60 bg-white/60 p-3 shadow-[0_18px_60px_rgba(15,23,42,0.18)] backdrop-blur sm:rounded-3xl sm:p-6">
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/bookings" element={<Bookings />} />

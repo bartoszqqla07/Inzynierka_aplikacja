@@ -13,7 +13,7 @@ import { useAuth } from "../lib/auth";
 const API = "http://localhost:5000";
 
 const baseClasses =
-  "rounded-xl bg-teal-600 px-3 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-teal-500";
+  "rounded-xl bg-teal-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-teal-500 sm:text-sm";
 const activeClasses = "ring-2 ring-teal-200";
 const inactiveClasses = "";
 
@@ -266,7 +266,7 @@ export default function Navbar() {
         <button
           type="button"
           onClick={() => setIsMenuOpen((value) => !value)}
-          className="rounded-xl border border-slate-200 bg-white/80 px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-white"
+          className="rounded-xl border border-slate-200 bg-white/80 px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-white sm:text-sm"
           aria-expanded={isMenuOpen}
           aria-haspopup="menu"
         >
@@ -274,7 +274,7 @@ export default function Navbar() {
         </button>
         {isMenuOpen ? (
           <div
-            className="absolute right-0 mt-2 w-[min(14rem,calc(100vw-2rem))] rounded-2xl border border-slate-200 bg-white py-2 shadow-[0_20px_50px_rgba(15,23,42,0.18)]"
+            className="absolute right-0 z-30 mt-2 w-[min(12rem,calc(100vw-1.5rem))] overflow-hidden rounded-2xl border border-slate-200 bg-white py-2 shadow-[0_20px_50px_rgba(15,23,42,0.18)] sm:w-[min(14rem,calc(100vw-2rem))]"
             role="menu"
           >
             <Link
@@ -331,17 +331,17 @@ export default function Navbar() {
         ) : null}
       </div>
       {isDemoMode ? (
-        <span className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-700">
+        <span className="rounded-xl border border-amber-200 bg-amber-50 px-2.5 py-2 text-[11px] font-semibold text-amber-700 sm:px-3 sm:text-xs">
           DEMO
         </span>
       ) : null}
       {session ? (
         <>
-          <div className="relative" ref={userMenuRef}>
+          <div className="relative order-last w-full sm:order-none sm:w-auto" ref={userMenuRef}>
             <button
               type="button"
               onClick={() => setIsOpen((value) => !value)}
-              className={`${baseClasses} max-w-[min(220px,60vw)] truncate`}
+              className={`${baseClasses} w-full max-w-none truncate text-left sm:max-w-[min(220px,60vw)] sm:text-center`}
               aria-expanded={isOpen}
               aria-haspopup="menu"
             >
@@ -349,7 +349,7 @@ export default function Navbar() {
             </button>
             {isOpen ? (
               <div
-                className="absolute right-0 mt-2 w-[min(16rem,calc(100vw-2rem))] rounded-2xl border border-slate-200 bg-white py-2 shadow-[0_20px_50px_rgba(15,23,42,0.18)]"
+                className="absolute right-0 z-30 mt-2 w-full overflow-hidden rounded-2xl border border-slate-200 bg-white py-2 shadow-[0_20px_50px_rgba(15,23,42,0.18)] sm:w-[min(16rem,calc(100vw-2rem))]"
                 role="menu"
               >
                 <div className="px-4 py-2 text-xs uppercase tracking-wide text-slate-400">
@@ -410,7 +410,7 @@ export default function Navbar() {
             </button>
             {isNotificationsOpen ? (
               <div
-                className="absolute right-0 mt-2 w-[min(20rem,calc(100vw-2rem))] rounded-2xl border border-slate-200 bg-white py-2 shadow-[0_20px_50px_rgba(15,23,42,0.18)]"
+                className="absolute right-0 z-30 mt-2 w-[min(18rem,calc(100vw-1.5rem))] overflow-hidden rounded-2xl border border-slate-200 bg-white py-2 shadow-[0_20px_50px_rgba(15,23,42,0.18)] sm:w-[min(20rem,calc(100vw-2rem))]"
                 role="menu"
               >
                 <div className="flex items-center justify-between px-4 pb-2">

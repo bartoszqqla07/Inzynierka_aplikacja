@@ -461,13 +461,13 @@ export default function OwnerPanel() {
       <aside className="h-fit rounded-2xl border border-slate-200/60 bg-white/70 p-4 shadow-sm">
         <div className="text-xs uppercase tracking-wide text-slate-400">Moje salony</div>
         {error && <div className="mt-2 text-xs text-rose-600">{error}</div>}
-        <div className="mt-3 flex gap-2 overflow-x-auto pb-1 lg:grid lg:overflow-visible lg:pb-0">
+        <div className="mt-3 grid gap-2">
           {salons.map((salon) => (
             <button
               key={salon.id}
               type="button"
               onClick={() => setSelectedId(salon.id)}
-              className={`min-w-[220px] rounded-xl border px-3 py-2 text-left text-sm font-semibold transition lg:min-w-0 ${
+              className={`w-full rounded-xl border px-3 py-2 text-left text-sm font-semibold transition ${
                 selectedId === salon.id
                   ? "border-slate-900 bg-slate-900 text-white"
                   : "border-slate-200 bg-white/80 text-slate-700 hover:border-slate-400"
