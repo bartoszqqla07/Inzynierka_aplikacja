@@ -260,7 +260,7 @@ export default function Navbar() {
             setIsOpen(false);
             setIsNotificationsOpen(false);
           }}
-          className="relative rounded-xl border border-slate-200 bg-white/85 p-2.5 text-slate-700 shadow-sm transition hover:bg-white"
+          className="relative rounded-xl border border-slate-200 bg-white/85 p-2.5 text-slate-700 shadow-sm outline-none transition hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-300 focus-visible:ring-offset-2 active:bg-slate-50 [&::-moz-focus-inner]:border-0"
           aria-expanded={isMenuOpen}
           aria-haspopup="menu"
           aria-label="Otworz menu"
