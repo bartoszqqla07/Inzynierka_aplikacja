@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { isDemoMode } from "../config/demoMode";
 import {
   deleteDemoNotification,
@@ -33,6 +33,7 @@ function NavItem({ to, label, end, state }) {
 }
 
 export default function Navbar() {
+  const navigate = useNavigate();
   const location = useLocation();
   const from = `${location.pathname}${location.search}`;
   const { session, user } = useAuth();
@@ -271,9 +272,13 @@ export default function Navbar() {
     setIsOpen(false);
     setIsNotificationsOpen(false);
   };
+  const handleMobileNavigate = (to, options = {}) => {
+    closeAllMenus();
+    navigate(to, options);
+  };
 
   return (
-    <nav className="flex w-full items-center justify-end gap-2 lg:w-auto">
+    <nav className="flex shrink-0 items-center justify-end gap-2 lg:w-auto">
       <div className="relative lg:hidden" ref={mobileMenuRef}>
         <button
           type="button"
@@ -416,54 +421,54 @@ export default function Navbar() {
                     </div>
 
                     <div className="mt-2 grid gap-1">
-                      <Link
-                        to="/my-bookings"
+                      <button
+                        type="button"
                         className="rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                        onClick={closeAllMenus}
+                        onClick={() => handleMobileNavigate("/my-bookings")}
                       >
                         Moje rezerwacje
-                      </Link>
-                      <Link
-                        to="/add-review"
+                      </button>
+                      <button
+                        type="button"
                         className="rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                        onClick={closeAllMenus}
+                        onClick={() => handleMobileNavigate("/add-review")}
                       >
                         Dodaj opinie
-                      </Link>
+                      </button>
                       {isAdmin ? (
                         <>
-                          <Link
-                            to="/schedule"
+                          <button
+                            type="button"
                             className="rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                            onClick={closeAllMenus}
+                            onClick={() => handleMobileNavigate("/schedule")}
                           >
                             Terminarz
-                          </Link>
-                          <Link
-                            to="/admin"
+                          </button>
+                          <button
+                            type="button"
                             className="rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                            onClick={closeAllMenus}
+                            onClick={() => handleMobileNavigate("/admin")}
                           >
                             Panel admina
-                          </Link>
+                          </button>
                         </>
                       ) : null}
                       {isOwner && !isAdmin ? (
                         <>
-                          <Link
-                            to="/schedule"
+                          <button
+                            type="button"
                             className="rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                            onClick={closeAllMenus}
+                            onClick={() => handleMobileNavigate("/schedule")}
                           >
                             Terminarz
-                          </Link>
-                          <Link
-                            to="/owner"
+                          </button>
+                          <button
+                            type="button"
                             className="rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                            onClick={closeAllMenus}
+                            onClick={() => handleMobileNavigate("/owner")}
                           >
                             Panel wlasciciela
-                          </Link>
+                          </button>
                         </>
                       ) : null}
                     </div>
@@ -482,14 +487,13 @@ export default function Navbar() {
                     </div>
                   </>
                 ) : (
-                  <Link
-                    to="/login"
-                    state={{ from }}
-                    className="block rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                    onClick={closeAllMenus}
+                  <button
+                    type="button"
+                    className="block w-full rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                    onClick={() => handleMobileNavigate("/login", { state: { from } })}
                   >
                     Zaloguj sie
-                  </Link>
+                  </button>
                 )}
               </div>
             </div>
