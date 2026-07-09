@@ -61,7 +61,7 @@ export default function App() {
           </header>
 
           <main className="mx-auto w-full max-w-6xl px-3 py-5 sm:px-4 sm:py-8">
-            <div className="overflow-hidden rounded-2xl border border-slate-200/60 bg-white/60 p-3 shadow-[0_18px_60px_rgba(15,23,42,0.18)] backdrop-blur sm:rounded-3xl sm:p-6">
+            <div className="overflow-visible rounded-2xl border border-slate-200/60 bg-white/60 p-3 shadow-[0_18px_60px_rgba(15,23,42,0.18)] backdrop-blur sm:rounded-3xl sm:p-6">
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/bookings" element={<Bookings />} />

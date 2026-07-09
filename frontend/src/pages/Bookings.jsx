@@ -435,7 +435,7 @@ export default function Bookings() {
   }
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-slate-50/70 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] sm:p-6">
+    <div className="relative overflow-visible rounded-3xl border border-slate-200/70 bg-slate-50/70 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] sm:p-6">
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(20,184,166,0.18),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(15,23,42,0.12),_transparent_60%)]" />
       <div className="pointer-events-none absolute inset-0 -z-10 opacity-40 [background-image:linear-gradient(135deg,rgba(148,163,184,0.25)_1px,transparent_1px)] [background-size:28px_28px]" />
       <div className="grid items-start gap-4 lg:gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
