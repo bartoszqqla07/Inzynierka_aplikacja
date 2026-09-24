@@ -1,4 +1,6 @@
+const path = require("path");
 require("dotenv").config();
+require("dotenv").config({ path: path.join(__dirname, "../frontend/.env") });
 
 const express = require("express");
 const cors = require("cors");
@@ -13,8 +15,8 @@ const notificationStreams = new Map();
 app.use(cors());
 app.use(express.json({ limit: "50mb" }));
 
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
+const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 const jwksUrl = SUPABASE_URL
   ? new URL(`${SUPABASE_URL}/auth/v1/.well-known/jwks.json`)
   : null;
